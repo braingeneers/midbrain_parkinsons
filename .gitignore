@@ -1,3 +1,9 @@
+# Human_Hippocampus: ignore large datasets
+*data/ephys/*
+*.h5
+*.zip
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
