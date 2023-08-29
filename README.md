@@ -1,2 +1,2 @@
-# human_hippocampus
+# Human Hippocampus
  
