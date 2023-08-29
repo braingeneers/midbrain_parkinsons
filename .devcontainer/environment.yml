@@ -1,0 +1,17 @@
+channels:
+  - conda-forge
+dependencies:
+  - python==3.10
+  - jupyterlab
+  - ipywidgets
+  - ipykernel
+  - jupyterlab-git
+  - wget
+  - curl
+  - ncdu
+  - ffmpeg
+  - rclone
+  - awscli
+  - hdf5tools
+  - pytables
+  - pip

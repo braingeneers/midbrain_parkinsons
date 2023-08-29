@@ -1,0 +1,2 @@
+time (sec),intensity_fraction,initial_delay (frames),on_duration (frames),off_duration (frames),notes,use_maxwell,delta_t (sec)
+1680470743.6262481,0.9,0,200000,4000,,True,12.233412742614746
