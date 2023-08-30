@@ -1,1 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
+[project]
+name = "Human Hippocampus"
+version = "1.0.0"
+authors = [
+  { name="Braingeneers", email="melliot1@ucsc.edu" },
+  { name="UW SSEC", email="ssec@uw.edu" },
+]
+description = "Collaborative Environment for Analyzing the Human Hippocampus datasets"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+keywords = ["Braingeneers", "Human", "Hippocampus"]
+
+[project.urls]
+Homepage = ""
+Documentation = ""
+Repository = "https://github.com/uw-ssec/human_hippocampus.git"
+Changelog = ""
+Issues = "https://github.com/uw-ssec/human_hippocampus/issues"
