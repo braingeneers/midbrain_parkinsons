@@ -1,11 +1,3 @@
 # Human Hippocampus
  
-Collaborative workspace for 
-
-
-
-Test
-
-
-Terst
-
+Collaborative workspace for UCSC Braingeneers Human Hippocampus project
