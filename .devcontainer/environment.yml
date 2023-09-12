@@ -4,6 +4,7 @@ dependencies:
   - python==3.10
   - awscli
   - curl
+  - diptest
   - ffmpeg
   - hdf5tools
   - ipywidgets
@@ -16,11 +17,8 @@ dependencies:
   - pandas
   - pillow
   - pip
-<<<<<<< HEAD
   - pytables
   - rclone
   - scipy
   - wget
-=======
->>>>>>> main
-  - diptest
+  
