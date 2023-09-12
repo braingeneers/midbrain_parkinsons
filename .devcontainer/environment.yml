@@ -20,3 +20,4 @@ dependencies:
   - rclone
   - scipy
   - wget
+  - diptest
