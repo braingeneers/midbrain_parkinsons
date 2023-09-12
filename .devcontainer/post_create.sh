@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # This script is run after the dev container is created
 # This command downloads the latest version of the Braingeneers Python package from GitHub and installs it in the current environment
 # This script should be run from the root of the repository
