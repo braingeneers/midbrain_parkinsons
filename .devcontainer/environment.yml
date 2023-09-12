@@ -16,8 +16,11 @@ dependencies:
   - pandas
   - pillow
   - pip
+<<<<<<< HEAD
   - pytables
   - rclone
   - scipy
   - wget
+=======
+>>>>>>> main
   - diptest
