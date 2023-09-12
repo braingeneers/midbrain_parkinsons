@@ -2,6 +2,8 @@
 *data/ephys/*
 *.h5
 *.zip
+# ignore credentials files
+*/credentials
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
