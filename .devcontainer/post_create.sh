@@ -1,15 +1,13 @@
->> Description
+# This script is run after the dev container is created
 # This command downloads the latest version of the Braingeneers Python package from GitHub and installs it in the current environment
-Description <<
+# This script should be run from the root of the repository
 
-# Install braingeneers
+# Install the latest version of the Braingeneers Python package from GitHub
 ${NB_PYTHON_PREFIX}/bin/pip install --no-cache git+https://github.com/uw-ssec/braingeneerspy.git#egg=braingeneers[data,iot,analysis,ml]
 
->> Description
 # Install datasets from S3
 # This script will download the datasets from S3 and place them in the correct directory structure
 # This script should be run from the root of the repository
-Description <<
 
 # Define the base directory path
 base_dir="/workspaces/human_hippocampus/data/ephys"
