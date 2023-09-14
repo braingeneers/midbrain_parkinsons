@@ -10,9 +10,7 @@ authors = [
   { name="UW SSEC", email="ssec@uw.edu" },
 ]
 description = "Collaborative Environment for Analyzing the Human Hippocampus datasets"
-readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE.txt"}
 keywords = ["Braingeneers", "Human", "Hippocampus"]
 
 [project.urls]
