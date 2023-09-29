@@ -21,3 +21,6 @@ Documentation = ""
 Repository = "https://github.com/uw-ssec/human_hippocampus.git"
 Changelog = ""
 Issues = "https://github.com/uw-ssec/human_hippocampus/issues"
+
+[tool.hatch.build]
+sources = ["src"]
