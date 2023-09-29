@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+def test_function( to_print: str ):
+    print(to_print)
 
 
 
@@ -29,14 +31,11 @@ from IPython.display import HTML, display, Javascript, clear_output
 
 
 
-
-
-
-
-
 import io
 import zipfile
 from typing import List, Tuple
+
+
 
 def read_phy_files(path: str, fs=20000.0):
     """
