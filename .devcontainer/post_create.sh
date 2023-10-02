@@ -10,7 +10,7 @@ python3 -m pip install diptest
 # This script should be run from the root of the repository
 
 # Define the base directory path
-base_dir="${HOME}/data/ephys"
+base_dir="${HOME}/data/"
 
 # Create the base directory
 mkdir -p "$base_dir"
