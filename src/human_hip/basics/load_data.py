@@ -1,41 +1,18 @@
 #!/usr/bin/env python3
 
-def test_function( to_print: str ):
-    print(to_print)
-
-
-
-#import fcm
-import os
-import re
-import glob
-import random
-import numpy as np
-import scipy
-import scipy.io as sio
-import scipy.ndimage as ndimage
-from scipy.ndimage import gaussian_filter1d
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-import matplotlib.patches as patches
-from matplotlib.patches import Patch, Circle
-from matplotlib.lines import Line2D
-from PIL import Image
-import ipywidgets as ipw
-from ipywidgets import interact, interactive, fixed, interact_manual  # package for interactive widgets 
-import braingeneers                                                   # Braingeneers code
-from braingeneers.analysis.analysis import SpikeData, read_phy_files
-import braingeneers.data.datasets_electrophysiology as ephys
-from IPython.display import HTML, display, Javascript, clear_output
+#### Summary ####
+# This code contains the read_phy_files command
+# This is used to load in data from a file is used to load data from a file into python
+# This code replaces a command in braingeneerspy by the same name, but which causes errors
 
 
 
 import io
 import zipfile
+import numpy as np
+import pandas as pd
 from typing import List, Tuple
-
-
+from braingeneers.analysis.analysis import SpikeData
 
 def read_phy_files(path: str, fs=20000.0):
     """

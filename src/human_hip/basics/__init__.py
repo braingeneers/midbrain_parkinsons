@@ -1,4 +1,7 @@
-from .basics import test_function
-from .matt_module import matt_func
+from .load_data import *    
 
-__all__ = ["test_function", "matt_func"]
+__all__ = ["read_phy_files"]
+
+
+#from .matt_module import matt_func
+
