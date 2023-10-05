@@ -9,6 +9,7 @@ from braingeneers.analysis.analysis import SpikeData
 from scipy.ndimage import gaussian_filter1d
 import numpy as np
 
+
 # Plots a simple spike raster
 def raster_plot(sd, ax):
     """"
@@ -22,7 +23,7 @@ def raster_plot(sd, ax):
     ax.set_title("Raster Plot")
     
 
-# Fancier raster plot, where you can specify sub-times to plot, and the plot size
+# Fancier raster plot, where you can specify sub-times to plot, and the plot size. Also shows moving average of firing rate
 def raster_fancy_plot(sd, xsize=10, ysize=6, start_time=0, stop_time=None, save_path=None):
     """"
     param sd: a spike data object, the common data format used by braingeneers

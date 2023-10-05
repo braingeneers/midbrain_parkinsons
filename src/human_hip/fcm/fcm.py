@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-from ..basics import matt_func
-def matt_func2( to_print):
-    return matt_func( to_print )
 
 
 #from human_hip import basics
