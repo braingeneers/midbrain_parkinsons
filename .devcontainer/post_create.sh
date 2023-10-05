@@ -2,7 +2,6 @@
 
 # Installs `human_hip` as local library without resolving dependencies (--no-deps)
 python3 -m pip install -e /workspaces/human_hippocampus --no-deps
-python3 -m pip install diptest
 
 
 # Install datasets from S3
