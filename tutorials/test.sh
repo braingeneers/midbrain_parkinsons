@@ -1,9 +1,5 @@
-# For writing commands that will be executed after the container is created
 
-# Installs `human_hip` as local library without resolving dependencies (--no-deps)
-python3 -m pip install -e /workspaces/human_hippocampus --no-deps
-
-# Loop through the dataset names to download them for S3
+# Loop through the dataset names
 for data in "2023-04-02-e-hc328_unperturbed/derived/"  "2022-11-02-e-Hc11.1-chip16753/derived/" "2023-05-10-e-hc52_18790_unperturbed/derived/"
 # note- we exclude a potential data, "2022-10-20-e-/derived/", infant dentate, feel free to download and analyze it! 
 do
@@ -12,5 +8,5 @@ do
   aws --endpoint https://s3-west.nrp-nautilus.io s3 cp "s3://braingeneers/ephys/$data" "/workspaces/human_hippocampus/data/ephys/$data" --recursive --no-sign-request
 done
 
-# Create curated versions of the data
-python3 /workspaces/human_hippocampus/src/curate_data.py
+
+
