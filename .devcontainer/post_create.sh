@@ -2,6 +2,7 @@
 
 # Installs `human_hip` as local library without resolving dependencies (--no-deps)
 python3 -m pip install -e /workspaces/human_hippocampus --no-deps
+python3 -m pip install diptest
 
 # Loop through the dataset names to download them for S3
 for data in "2023-04-02-e-hc328_unperturbed/derived/"  "2022-11-02-e-Hc11.1-chip16753/derived/" "2023-05-10-e-hc52_18790_unperturbed/derived/"
