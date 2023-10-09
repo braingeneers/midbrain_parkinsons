@@ -7,6 +7,9 @@ Welcome to the **Human Hippocampus** repository, a research project by the UCSC 
 
 Our research team uses Github Codespaces to do research inside of this repository. Codespaces provide a cloud environment where you can work on code for research just like how you usualy do on your personal computer. However, because everything in codespaces happens in the cloud, it provides massive benefits for collaborating on research and sharing your findings with others. Here' we provide a brief introduction to codespace and teach how to get started with doing research..
 
+
+create a merge conflict
+
 ## Getting Started
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/uw-ssec/human_hippocampus?quickstart=1)
