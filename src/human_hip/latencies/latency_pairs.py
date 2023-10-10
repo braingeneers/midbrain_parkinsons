@@ -3,6 +3,8 @@
 import numpy as np
 
 
+
+
 def getLatencies(neuron1, neuron2, sd, ms_cutoff=9e12):
     """
     Function:
@@ -29,7 +31,8 @@ def getLatencies(neuron1, neuron2, sd, ms_cutoff=9e12):
     return np.array(cur_latencies)
 
 
-def getLatencyTimes(neuron1, neuron2, sd, ms_cutoff=9e12, directed=False):
+
+def getLatencyTimes(neuron1, neuron2, sd, ms_cutoff=9e12, positive_only=False):
     """
     Function:
         returns the timepoints (in ms) for which a latency occurs between two neurons, n1 and n2. 
@@ -39,7 +42,7 @@ def getLatencyTimes(neuron1, neuron2, sd, ms_cutoff=9e12, directed=False):
         neuron2 (integer): index of the neuron, n2, *note* if n1 occurs before n2, the latency will be positive
         sd (SpikeData object): contains the original spike data from the recording
         ms_cutoff (integer): the maximum latency to be considered, in milliseconds
-        directed (boolean): if True, only return latencies for which n1 occurs before n2
+        positive_only (boolean): if True, only return latencies for which n1 occurs before n2
     Outputs:
         cur_latencies (np.array): the timepoints for which every latency occurs between n1 and n2, that is less than ms_cutoff
     """
@@ -53,7 +56,7 @@ def getLatencyTimes(neuron1, neuron2, sd, ms_cutoff=9e12, directed=False):
         #time2 = train2[abs_diff_ind]#print(time, time2, latency)
 
         if np.abs(latency) <= ms_cutoff:     # Only append latencies that are within a certain time cutoff
-            if directed:
+            if positive_only:
                 if latency>0:
                     cur_latencies.append(time)
             else:
