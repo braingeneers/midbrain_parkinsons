@@ -8,7 +8,8 @@
 			"ms-toolsai.jupyter",
 			"ms-python.python",
 			"ms-vsliveshare.vsliveshare",
-			"GitHub.copilot"
+			"GitHub.copilot",
+			"eamodio.gitlens"
 		]
 		}
 	},
