@@ -15,25 +15,42 @@
 ########################
 
 
+#######    ??Anterior/Posterior??  CA1  #############
+2023-04-02-e-hc328_unperturbed
+*.   CA1 region
+*.   Best recording, many neurons
+*.   Files: hc9.19_chp-16849_plated-10.19.22_rec10.19.22_curated.zip
+2023-04-02-hc328_rec
+*.   More data from slice: 2023-04-02-e-hc328_unperturbed
+*.   Contains optogenetics pertubations and bicuculline
+*.   Data 6 analyzed by extensively
+
+
+#######    ??Posterior/Anterior??  CA1  #############
+2023-05-10-e-hc52_18790_unperturbed
+*.   CA1 region 
+*.   short recording: 1.5 minutes
+*.   Good activity
+*.   Files: hc5.2_chip18790_baseline_rec5.10.23_s1_curated.zip
+*.   Files, pickle file was used extensively: 5-10-23s1-CutData.pkl
+2023-05-10-e-hc52_18790
+
+
+#######    Adult Dentat Gyrus    #############
 2022-11-02-e-Hc11.1-chip16753
 *.  Adult dentate gyrus
 *.  Good recording, many neurons
 *.  Files: hc11.1_plated-11.1_chip-16753_rec_11.2.22AM-immediate_curated.zip
 *.  Files, another file with half neurons: hc11.1_plated-11.1_chip-16753_rec_11.2.22AM-immediate_neg_curated.zip
+*.  ?Is one of the recording bicuculline?
 
+#######    Infant Dentate Gyrus    #############
+2022-10-20-e-
+*.  Infant Dentate Gyrus
+*.  displays seizure activity
+*   Not many neurons, but long recording
+*.  Files: hc9.19_chp-16849_plated-10.19.22_rec10.19.22_curated.zip
 
-2023-04-02-e-hc328_unperturbed
-*.   CA1 region
-*.   Best recording, many neurons
-*.   Files: hc9.19_chp-16849_plated-10.19.22_rec10.19.22_curated.zip
-
-
-2023-05-10-e-hc52_18790_unperturbed
-*.   Unkown region
-*.   short recording: 1.5 minutes
-*.   Good activity
-*.   Files: hc5.2_chip18790_baseline_rec5.10.23_s1_curated.zip
-*.   Files, pickle file was used extensively: 5-10-23s1-CutData.pkl
 
 
 
@@ -42,16 +59,9 @@
 #.   Potential Data
 ########################
 
-2022-10-20-e-
-*.  Infant Dentate Gyrus
-*.  displays seizure activity
-*   Not many neurons, but long recording
-*.  Files: hc9.19_chp-16849_plated-10.19.22_rec10.19.22_curated.zip
 
-2023-04-02-hc328_rec
-*.   More data from slice: 2023-04-02-e-hc328_unperturbed
-*.   Contains optogenetics pertubations and bicuculline
-*.   Data 6 analyzed by extensively
+
+
 
 
 2023-04-03-hc328b_ChR2
@@ -63,7 +73,7 @@
 2023-05-09-e-hc52_18763
 *.   Not sure what it is
 2023-05-10-e-hc52_18790
-*.   Not sure what it is
+*.  Another CA1 slice!
 
 
 
