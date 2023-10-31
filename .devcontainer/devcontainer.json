@@ -9,8 +9,7 @@
 			"ms-python.python",
 			"ms-vsliveshare.vsliveshare",
 			"GitHub.copilot",
-			"eamodio.gitlens",
-			"ms-python.vscode-pylance:pre-release"
+			"eamodio.gitlens"
 		]
 		}
 	},
