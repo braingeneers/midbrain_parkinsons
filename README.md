@@ -13,7 +13,7 @@ create a merge conflict
 
 ## Getting Started
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/uw-ssec/human_hippocampus?quickstart=1)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/braingeneers/human_hippocampus?quickstart=1)
 
 To get started with our research and analysis tools, follow these steps:
 
