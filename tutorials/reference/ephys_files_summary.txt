@@ -22,7 +22,7 @@
 *.   Files: hc9.19_chp-16849_plated-10.19.22_rec10.19.22_curated.zip
 2023-04-02-hc328_rec
 *.   More data from slice: 2023-04-02-e-hc328_unperturbed
-*.   Contains optogenetics pertubations and bicuculline
+*.   Contains optogenetics pertubations ?and bicuculline?
 *.   Data 6 analyzed by extensively
 
 
@@ -42,7 +42,7 @@
 *.  Good recording, many neurons
 *.  Files: hc11.1_plated-11.1_chip-16753_rec_11.2.22AM-immediate_curated.zip
 *.  Files, another file with half neurons: hc11.1_plated-11.1_chip-16753_rec_11.2.22AM-immediate_neg_curated.zip
-*.  ?Is one of the recording bicuculline?
+*.  Is one of the recording bicuculline
 
 #######    Infant Dentate Gyrus    #############
 2022-10-20-e-
