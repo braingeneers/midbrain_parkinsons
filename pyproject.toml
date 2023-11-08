@@ -18,9 +18,9 @@ keywords = ["Braingeneers", "Human", "Hippocampus"]
 [project.urls]
 Homepage = "https://braingeneers.ucsc.edu"
 Documentation = ""
-Repository = "https://github.com/uw-ssec/human_hippocampus.git"
+Repository = "https://github.com/braingeneers/human_hippocampus.git"
 Changelog = ""
-Issues = "https://github.com/uw-ssec/human_hippocampus/issues"
+Issues = "https://github.com/braingeneers/human_hippocampus/issues"
 
 [tool.hatch.build]
 sources = ["src"]
