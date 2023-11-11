@@ -54,7 +54,7 @@ Examples
 --------
 >>> FCM_Plotter("/home/jovyan/work/Human_Hippocampus/data/hippocampus/hippocampus_1", 0, 10, "hippocampus_1", 0.2, 100, 0.5, "yes")
 """
-
+"""
 # Function to plot FCM
 def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_ms_thresh=100, line_threshold=0.5, saved='yes'):
     sd = read_phy_files(dataset_path)
@@ -229,3 +229,4 @@ def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_m
             return
         
     sttc_neuron_plotter(sd, colors,line_threshold)
+"""
