@@ -16,4 +16,4 @@ do
 done
 
 # Create curated versions of the data
-python3 /workspaces/human_hippocampus/src/curate_data.py
+python3 /workspaces/human_hippocampus/.devcontainer/curate_data.py
