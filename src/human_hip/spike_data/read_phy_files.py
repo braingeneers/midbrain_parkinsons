@@ -12,6 +12,9 @@ import zipfile
 import numpy as np
 import pandas as pd
 from typing import List, Tuple
+# import smart_open
+# import zipfile
+
 from braingeneers.analysis.analysis import SpikeData
 
 def read_phy_files(path: str, fs=20000.0):
@@ -106,6 +109,7 @@ def read_phy_files(path: str, fs=20000.0):
     spikedata = SpikeData(list(cluster_agg["spikeTimes"]), neuron_data=neuron_data, metadata=metadata, neuron_attributes=neuron_attributes)
     return spikedata
 
+
 class NeuronAttributes:
     cluster_id: int
     channel: np.ndarray
@@ -143,8 +147,19 @@ class NeuronAttributes:
 
 
 
-
-
+# def read_phy_files_acqm( qm_path ):
+#     """
+#     """
+#     with smart_open.open(qm_path, 'rb') as f:
+#         with zipfile.ZipFile(f, 'r') as f_zip:
+#             qm = f_zip.open("qm.npz")
+#             data = np.load(qm, allow_pickle=True)
+#             spike_times = data["train"].item()
+#             fs = data["fs"]
+#             train = [times / fs for _, times in spike_times.items()]
+#             config = data["config"].item()
+#             neuron_data = data["neuron_data"].item()
+#     return train, neuron_data, config, fs
 
 
 

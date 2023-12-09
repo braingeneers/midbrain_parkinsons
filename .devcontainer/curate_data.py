@@ -4,7 +4,7 @@
 import numpy as np
 import pickle
 from braingeneers.analysis.analysis import SpikeData
-from human_hip.basics import read_phy_files
+from human_hip.spike_data import read_phy_files
 
 
 #######################################
@@ -14,7 +14,7 @@ from human_hip.basics import read_phy_files
 #######################################
 
 # We load in the ?Anterior? CA1 dataset.
-sd = read_phy_files('/workspaces/human_hippocampus/data/ephys/2023-04-02-e-hc328_unperturbed/derived/kilosort2/hc3.28_hckcr1_chip16835_plated34.2_rec4.2_curated.zip')
+sd = read_phy_files('/workspaces/human_hippocampus/data/ephys/2023-04-02-e-hc328_unperturbed/derived/kilosort2/hc3.28_hckcr1_chip16835_plated34.2_rec4.2_curated_s1.zip')
 
 # Create sub-datasets and get their spike trains
 sd_1 = sd.subtime(0, 22.5*1000)
@@ -56,7 +56,7 @@ upd_sd2 = SpikeData(combined_spike_train, length=(sd_1.length + sd_2.length + sd
                          neuron_attributes=sd_1.neuron_attributes)
 
 # Save Dataset
-with open( '/workspaces/human_hippocampus/data/ephys/2023-04-02-e-hc328_unperturbed/StitchedDataUpdated.pkl' , 'wb') as file:
+with open( '/workspaces/human_hippocampus/data/ephys/2023-04-02-e-hc328_unperturbed/sd_ca1_curated.pkl' , 'wb') as file:
     pickle.dump(upd_sd2, file)
 
 
