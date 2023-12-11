@@ -6,6 +6,8 @@ from scipy.ndimage import gaussian_filter1d
 
 
 
+
+### Replaced this code with a built in braingeneers function in the spike data object
 def firing_rates(spike_data):
     """
     input: a spike data object, the common data format used by braingeneers
@@ -17,7 +19,6 @@ def firing_rates(spike_data):
         time_duration = spike_data.length / 1000  # Assuming spike times are in milliseconds
         firing_rate = num_spikes / time_duration
         mean_firing_rates.append(firing_rate)
-
     return np.array(mean_firing_rates)
 
 
@@ -50,7 +51,7 @@ def summary_plots(sd):
     input: a spike data object, the common data format used by braingeneers
     output: plots for ISI histogram, firing rate (histogram & layout), and Spikeraster of first 30 seconds
     """
-    my_firing_rates = firing_rates(sd)
+    my_firing_rates = firing_rates(sd)  #my_firing_rates = sd.rates()
     seconds=30 # seconds to display raster
     neuron_x = []
     neuron_y = []
@@ -70,14 +71,15 @@ def summary_plots(sd):
     plots[0,0].set_ylabel("ISI count")
     
     # Plot Firing Rates Histogram subplot
-    plots[0,1].hist(my_firing_rates);
+    plots[0,1].hist(my_firing_rates, bins=50)
     plots[0,1].set_title("Average Firing Rate for Neural Units") 
-    plots[0,1].set_xlabel("Firing Rate(ms)")
-    plots[0,1].set_ylabel("Unit Count") 
-    
+    plots[0,1].set_xlabel('Firing rate, Hz')
+    plots[0,1].set_ylabel('Number neural units') 
+
+
     # Plot Neuron Firing Rate Layout subplot
-    plots[1,0].scatter(neuron_x, neuron_y, s=my_firing_rates*100, c="red", alpha=0.3)
-    #plots[1,0].scatter(neuron_x, neuron_y, s=(2**firing_rates)*10, c="red", alpha=0.3)
+    #plots[1,0].scatter(neuron_x, neuron_y, s=(2**my_firing_rates)*100, c="red", alpha=0.3)
+    plots[1,0].scatter(neuron_x, neuron_y, s=(2**my_firing_rates)*10, c="red", alpha=0.3)
     plots[1,0].set_title("Neuron Firing Rate Across MEA")
     plots[1,0].set_xlabel("um")
     plots[1,0].set_ylabel("um")
