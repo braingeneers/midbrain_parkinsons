@@ -7,7 +7,7 @@ import os
 from human_hip.spike_data import read_phy_files
 
 
-def summary_text(sd):
+def text_summary(sd):
     """
     Function: provide a basic text summary of a spike data object
     Input: sd (Spike Data Object)- the standard type of  object used by braingeneers to store spike data
@@ -38,7 +38,7 @@ def summary_text(sd):
 
 
 
-def summary_UUID(folder_name, data_path="/workspaces/human_hippocampus/data/ephys" ):
+def text_summary_UUID(folder_name, data_path="/workspaces/human_hippocampus/data/ephys" ):
     """
     Function: Provides a text summary of all spike data files in a UUID folder
     Inputs:

@@ -11,7 +11,7 @@ import numpy as np
 
 
 # Plots a simple spike raster
-def raster_plot(sd, ax):
+def plot_raster(sd, ax):
     """"
     param sd: a spike data object, the common data format used by braingeneers
     param ax: the axis object used by matplotlib, it can be called later for ploting
@@ -24,7 +24,7 @@ def raster_plot(sd, ax):
     
 
 # Fancier raster plot, where you can specify sub-times to plot, and the plot size. Also shows moving average of firing rate
-def raster_fancy_plot(sd, xsize=10, ysize=6, start_time=0, stop_time=None, save_path=None):
+def plot_raster_fancy(sd, xsize=10, ysize=6, start_time=0, stop_time=None, save_path=None):
     """"
     param sd: a spike data object, the common data format used by braingeneers
     params xsize, ysize: the size of the x/y axises for the resulting plot

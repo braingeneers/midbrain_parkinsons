@@ -46,7 +46,7 @@ def ISI(sd, neuron=-1, max_isi=100):
 
 
 
-def summary_plots(sd):
+def plot_summary(sd):
     """
     input: a spike data object, the common data format used by braingeneers
     output: plots for ISI histogram, firing rate (histogram & layout), and Spikeraster of first 30 seconds
