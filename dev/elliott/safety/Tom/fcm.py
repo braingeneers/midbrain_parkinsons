@@ -54,7 +54,7 @@ Examples
 --------
 >>> FCM_Plotter("/home/jovyan/work/Human_Hippocampus/data/hippocampus/hippocampus_1", 0, 10, "hippocampus_1", 0.2, 100, 0.5, "yes")
 """
-"""
+
 # Function to plot FCM
 def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_ms_thresh=100, line_threshold=0.5, saved='yes'):
     sd = read_phy_files(dataset_path)
@@ -72,6 +72,7 @@ def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_m
             empties.append(i)
     # Subset the arrays
     sub_start = sd_start.subset(not_empties)
+
     # Find the latencies
     def latencies_mean(lat_list):
         nested_list = lat_list
@@ -85,6 +86,7 @@ def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_m
                 sublist_mean = round(sublist_mean, 3)  # Round to 3d.p.
             nested_list[i] = sublist_mean
         return nested_list
+    
     # Calculate the mean latencies
     def calculate_mean_latencies(sd, latencies_ms_thresh):
         num_neurons = sd.N
@@ -97,6 +99,7 @@ def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_m
         return latencies_array # Returns a list of lists
     # Calculate the mean latencies
     start_latencies = calculate_mean_latencies(sub_start, latencies_ms_thresh)
+
     # Calculate the in and out degree
     def compute_in_out_degree(latencies_array):
         num_neurons = len(latencies_array)
@@ -119,6 +122,7 @@ def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_m
     # Calculate the in and out degree
     start_in_out_deg = compute_in_out_degree(start_latencies)
     # Label the nodes
+
     def label_nodes(in_out_deg, latency_thresh=0.2):
         node_info = ['grey'] * len(in_out_deg)
         # node_info = [None] * len(in_out_deg)
@@ -134,6 +138,8 @@ def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_m
         return node_info # Returns a list of strings
     # Label the nodes
     colors = label_nodes(start_in_out_deg, latency_thresh)
+
+    
     # Plot the FCM
     def closest_value(number):
         closest = 5
@@ -229,4 +235,3 @@ def FCM_Plotter(dataset_path, start, stop, name, latency_thresh=0.2, latencies_m
             return
         
     sttc_neuron_plotter(sd, colors,line_threshold)
-"""
