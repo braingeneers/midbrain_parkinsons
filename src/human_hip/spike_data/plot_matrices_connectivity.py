@@ -2,7 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from human_hip.spike_data.analysis import correlation_matrix
+from human_hip.spike_data.analysis import  correlation_matrix
 
 
 def plot_sttc_matrix( sd, blur=20, plot_color="magma" ):
@@ -37,6 +37,8 @@ def plot_correlation_matrix( sd, blur=5, plot_color="magma" ):
     plt.xlabel("Neuron")
     plt.ylabel("Neuron")
     plt.colorbar( shrink=0.3) # Add a colorbar to the plot
+
+
 
 
 def plot_matrices_connectivity( sd, plot_color="magma"):

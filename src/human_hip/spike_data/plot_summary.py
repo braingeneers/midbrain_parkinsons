@@ -4,44 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import gaussian_filter1d
 
-
-
-
-### Replaced this code with a built in braingeneers function in the spike data object
-def firing_rates(spike_data):
-    """
-    input: a spike data object, the common data format used by braingeneers
-    output: a numpy array of the mean firing rate of each neuron in the spike data object
-    """
-    mean_firing_rates = []
-    for neuron_spikes in spike_data.train:
-        num_spikes = len(neuron_spikes)
-        time_duration = spike_data.length / 1000  # Assuming spike times are in milliseconds
-        firing_rate = num_spikes / time_duration
-        mean_firing_rates.append(firing_rate)
-    return np.array(mean_firing_rates)
-
-
-
-def ISI(sd, neuron=-1, max_isi=100):
-    """
-    inputs:
-        sd: a spike data object, the common data format used by braingeneers
-        neuron: the neuron to get the interspike intervals for, if -1, all neurons are used
-        max_isi: the maximum allowed time (ms) between spikes, ISI's above this value are not included
-    output: a list of all the interspike intervals for the specified neuron, or all neurons if neuron=-1
-    """
-    if neuron == -1:
-        isis_raw = sd.interspike_intervals()
-        isis=[]
-        for isis_neuron in isis_raw:   
-            isis = isis + isis_neuron[isis_neuron<max_isi].tolist() 
-
-    else:
-        isis_neuron = sd.interspike_intervals()[neuron]
-        isis = isis_neuron[isis_neuron<max_isi].tolist() 
-        
-    return isis
+from human_hip.spike_data.analysis import firing_rates, ISI
 
 
 
