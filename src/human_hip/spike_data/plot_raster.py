@@ -10,8 +10,47 @@ from scipy.ndimage import gaussian_filter1d
 import numpy as np
 
 
+def plot_raster( sd, title="", axs=None, xlim=None, smoothness=1000, size=(16,6) ):
+    pop_rate = sd.binned(bin_size=1)
+    pop_fr = gaussian_filter1d(pop_rate.astype(float), sigma=smoothness)
+    bins = np.linspace(0, sd.length, pop_rate.shape[0] ) #/ 1000
+    
+    if axs is None:
+        fig, axs = plt.subplots(1, 1, figsize=size )
+    axs.set_title(title, fontsize=12)
+
+    y = 0
+    for vv in sd.train:
+        axs.scatter(vv, [y]*len(vv), marker="|", c='k', s=4, alpha=0.7)
+        y += 1
+    axs.set_xlabel("Time (s)", fontsize=16)
+    axs.set_ylabel("Unit", fontsize=16)
+    axs.xaxis.set_tick_params(labelsize=16)
+    axs.yaxis.set_tick_params(labelsize=16)
+    
+    axs1 = axs.twinx()
+    axs1.yaxis.set_label_position("right") 
+    axs1.spines['right'].set_color('r')
+    axs1.spines['right'].set_linewidth(3)
+    axs1.plot(bins, pop_fr, color='r', linewidth=3, alpha=0.6)
+    axs1.set_ylabel("Population Firing Rate (Hz)", fontsize=16, color='r')
+    axs1.set_xlabel("Time (s)", fontsize=16)
+    axs1.yaxis.set_tick_params(labelsize=16)
+    axs1.set_xlim(xlim)
+    #axs1.set_ylim(ylim)
+
+    axs1.spines['top'].set_visible(False)
+    axs1.get_xaxis().set_visible(False)
+    axs1.tick_params(left=False, right=True, labelleft=False, labelright=True,
+                    bottom=False, labelbottom=True)
+    axs1.tick_params(axis='y', colors='r')
+
+    return axs, axs1
+
+
+
 # Plots a simple spike raster
-def plot_raster(sd, ax):
+def plot_raster_old(sd, ax):
     """"
     param sd: a spike data object, the common data format used by braingeneers
     param ax: the axis object used by matplotlib, it can be called later for ploting
