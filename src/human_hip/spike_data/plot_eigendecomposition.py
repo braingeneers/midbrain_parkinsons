@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 
-
-
-
 import numpy as np                                                    # Packages for data analysis
 import matplotlib.pyplot as plt
 from human_hip.spike_data.analysis import correlation_matrix, eigenvalues_eigenvectors #firing_rates,
-
 
     
 def reconstruct(W, U, rank):
