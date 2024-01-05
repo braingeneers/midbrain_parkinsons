@@ -4,10 +4,22 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import FancyArrow
 from sklearn import preprocessing
 import numpy as np
-from human_hip.spike_data import latencies, plot_footprint
+from human_hip.spike_data import latencies, latency_times, plot_raster, plot_footprint
+from braingeneers.analysis.analysis import SpikeData
 import warnings
 import diptest 
 
+
+
+### Note: this code isn't done
+# It should state whether or not to plot directed or underected latencies 
+# It should also pass all of the parameters used in plot_raster
+def plot_raster_latency_pairs(sd, pairs):
+    latency_raster = []
+    for pair in pairs:
+        latency_raster.append( latency_times( pair[0], pair[1], sd, ms_cutoff=15, positive_only=False) )
+    sd_latency = SpikeData(latency_raster)
+    plot_raster( sd_latency )
 
 
 # The function creates  plot of arrows show the direction that information is flowing out of neurons
