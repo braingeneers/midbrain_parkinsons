@@ -57,11 +57,10 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75):
     normalized = preprocessing.normalize(centered) * arrow_length if normalize else centered # make same lengths, unless told otherwise
     
     # Draw Arrows
-    arrow_color = "red"
     for i in range(len(starts)):
         arrow = FancyArrow( 
                 starts[i][0], starts[i][1], normalized[i][0], normalized[i][1], length_includes_head=True, head_width=25,
-                linewidth=1, color=arrow_color, alpha=0.7, edgecolor=arrow_color, facecolor=arrow_color )
+                linewidth=1, color="red", alpha=0.7, edgecolor="red", facecolor="red" )
         plt.gca().add_patch(arrow)
 
 
