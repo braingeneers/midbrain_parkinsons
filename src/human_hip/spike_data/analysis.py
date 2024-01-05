@@ -91,14 +91,33 @@ def instant_firing_rate(sd, neuron_num, max_ifr=9e10 ):
 
 
 
+# https://stackoverflow.com/questions/14313510/how-to-calculate-rolling-moving-average-using-python-numpy-scipy
+def moving_average(a, n=20):
+    """
+    Function: Calculates the moving average of a list
+    Inputs:
+        a (list): list to calculate moving average of
+        n (int): number of points to average over
+    Outputs:
+        ret (list): list of the moving average of a
+    """
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n 
 
 
 
-
-
-
-
-
+def correlation(x, y):
+    """
+    Function: Calculates the correlation between two lists
+    Inputs:
+        x (list): first list
+        y (list): second list
+    Outputs:
+        (float): correlation between x and y
+    """
+    shortest = min( len(x), len(y) )
+    return np.corrcoef(x[:shortest], y[:shortest])[0, 1]
 
 
 

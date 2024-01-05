@@ -116,7 +116,7 @@ def plot_eigen_reconstrution( sd ):
 
 
 
-def plot_vector_layout(sd, vect, show_sttc=True, sttc_threshold=.1, plot_color="magma"):
+def plot_eigen_vector_layout(sd, vect, show_sttc=True, sttc_threshold=.1, plot_color="magma"):
     neuron_x = []
     neuron_y = []
     for neuron in sd.neuron_data[0].values(): # Plots neurons on a 2-d space, representing their positions on the array
@@ -151,4 +151,4 @@ def plot_vector_layout(sd, vect, show_sttc=True, sttc_threshold=.1, plot_color="
 def plot_eigendecomposition_vector(sd, vector_index=0, use_sttc=True, show_sttc=False, sttc_threshold=0.1,  plot_color="magma"):
     sd_matrix = sd.spike_time_tilings() if use_sttc else correlation_matrix(sd)
     eigenvalues, eigenvectors = eigenvalues_eigenvectors(sd_matrix)
-    plot_vector_layout(sd, eigenvectors[:, vector_index], show_sttc, sttc_threshold,  plot_color )
+    plot_eigen_vector_layout(sd, eigenvectors[:, vector_index], show_sttc, sttc_threshold,  plot_color )
