@@ -1,6 +1,6 @@
 
 
-from .read_phy_files import *
+from .read_data import *
 from .analysis import *
 from .plot_raster import *
 from .text_summary import *

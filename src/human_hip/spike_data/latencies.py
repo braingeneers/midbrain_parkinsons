@@ -5,7 +5,7 @@ from scipy.signal import correlate, correlation_lags
 
 
 
-def latencies(neuron1, neuron2, sd, ms_cutoff=20):
+def latencies(neuron1, neuron2, sd, ms_cutoff_low=0, ms_cutoff_high=20 ):
     """
     Function:
         returns all the latencies that occur between two neurons, n1 and n2. 
@@ -26,13 +26,13 @@ def latencies(neuron1, neuron2, sd, ms_cutoff=20):
         latency = np.array(train2)-time       # Calculate the actual latency
         latency = latency[abs_diff_ind]
 
-        if np.abs(latency) <= ms_cutoff:     # Only append latencies that are within a certain time cutoff
+        if np.abs(latency) <= ms_cutoff_high and np.abs(latency) >= ms_cutoff_low : # Only append latencies within a certain time cutoff
             cur_latencies.append(latency)
     return np.array(cur_latencies)
 
 
 
-def latency_times(neuron1, neuron2, sd, ms_cutoff=20, positive_only=False):
+def latency_times(neuron1, neuron2, sd, ms_cutoff_low=0, ms_cutoff_high=20, positive_only=False):
     """
     Function:
         returns the timepoints (in ms) for which a latency occurs between two neurons, n1 and n2. 
@@ -52,10 +52,9 @@ def latency_times(neuron1, neuron2, sd, ms_cutoff=20, positive_only=False):
     for time in train1:
         abs_diff_ind = np.argmin(np.abs(train2 - time))  # Subtract time from all spikes in the train and take the absolute value        
         latency = np.array(train2)-time       # Calculate the actual latency
-        latency = latency[abs_diff_ind]
-        #time2 = train2[abs_diff_ind]#print(time, time2, latency)
+        latency = latency[abs_diff_ind]        #time2 = train2[abs_diff_ind]#print(time, time2, latency)
 
-        if np.abs(latency) <= ms_cutoff:     # Only append latencies that are within a certain time cutoff
+        if np.abs(latency) <= ms_cutoff_high and np.abs(latency) >= ms_cutoff_low :     # Only append latencies within a certain time cutoff
             if positive_only:
                 if latency>0:
                     cur_latencies.append(time)
@@ -111,7 +110,7 @@ def curate_latencies(sd, cross_sttc_min_cutoff=2, cross_sttc_max_cutoff=15, sttc
     # Get all latencies whose median latency is above some minimum Latency Cuttoff
     pairs_late = [] #lags_late = []
     for pair in pairs:
-        pair_latencies = latencies( pair[0], pair[1], sd, ms_cutoff=20)  #latency= np.median(pair_latencies)
+        pair_latencies = latencies( pair[0], pair[1], sd, ms_cutoff_high=20)  #latency= np.median(pair_latencies)
         if abs(np.median(pair_latencies))> latency_cutoff:
             pairs_late.append( pair )  #lags_late.append( latency )
     pairs= pairs_late
