@@ -51,7 +51,7 @@ def butter_filter(data, lowcut=None, highcut=None, fs=20000.0, order=5):
 
 
 
-def get_brain_waves(data, fs):
+def get_brain_waves(data, fs=20000):
     waves = { "original": data, "basic": butter_filter( data, lowcut=0.1, highcut=100, fs=fs) }
     waves["low"]   = butter_filter( waves["basic"],  0.1, 0.5, fs=fs)
     waves["delta"] = butter_filter( waves["basic"], 0.5, 4, fs=fs)
