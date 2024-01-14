@@ -162,7 +162,8 @@ def read_autocurated_data( qm_path, read_config=False ):
     # Format into a spikedata object
     train_timed = [ a_train*1000 for a_train in train ]
     sd_auto_length = max([ max(a_train) for a_train in train_timed ])
-    return SpikeData( train_timed, length=sd_auto_length, N=len(train), neuron_data={0:neuron_data} ) # ignore for now: metadata= ?...config?
+    return SpikeData( train_timed, length=sd_auto_length, N=len(train), neuron_data={0:neuron_data}, 
+                     neuron_attributes=neuron_data ) # ignore for now: metadata= ?...config?
 
 
 # def read_phy_files_acqm( qm_path ):

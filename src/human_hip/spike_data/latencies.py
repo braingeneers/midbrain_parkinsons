@@ -84,14 +84,13 @@ def cross_sttc( n1, n2, sd, delt=20 ):
     Outputs:
         sttc (float): the spike time tiling coefficient for each shift between n1 and n2
     """
-    assert len(sd.neuron_attributes) == len(sd.train) 
+    assert len(sd.neuron_data[0]) == len(sd.train) 
     sttcs = []
     for i in range(-1000,1001):
         sd.train.append( sd.train[n1]+i )
-        sttcs.append( sd.spike_time_tiling( len(sd.neuron_attributes) , n2, delt= delt) )
+        sttcs.append( sd.spike_time_tiling( len(sd.neuron_data[0]) , n2, delt= delt) )
         sd.train.pop(-1)
     return np.array(sttcs)
-
 
 
 

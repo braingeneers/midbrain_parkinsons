@@ -17,9 +17,10 @@ import diptest
 def plot_raster_latency_pairs(sd, pairs):
     latency_raster = []
     for pair in pairs:
-        latency_raster.append( latency_times( pair[0], pair[1], sd, ms_cutoff=15, positive_only=False) )
+        latency_raster.append( latency_times( pair[0], pair[1], sd, ms_cutoff_high=15, positive_only=False) )
     sd_latency = SpikeData(latency_raster)
     plot_raster( sd_latency )
+
 
 
 # The function creates  plot of arrows show the direction that information is flowing out of neurons
@@ -46,7 +47,7 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75):
     # make pairs point in same direction
     pairs = pairs                         # make a copy of pairs, this avoids some bug
     for i in range(len(pairs)):
-        lag = np.median(latencies( pairs[i][0], pairs[i][1], sd, ms_cutoff=20))
+        lag = np.median(latencies( pairs[i][0], pairs[i][1], sd, ms_cutoff_high=20))
         if lag<0:
             pairs[i] = [ pairs[i][1], pairs[i][0] ]
 
@@ -62,7 +63,6 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75):
                 starts[i][0], starts[i][1], normalized[i][0], normalized[i][1], length_includes_head=True, head_width=25,
                 linewidth=1, color="red", alpha=0.7, edgecolor="red", facecolor="red" )
         plt.gca().add_patch(arrow)
-
 
 
 

@@ -8,7 +8,7 @@ import numpy as np
 
 
 def animate_latencies(sd, pairs, movie_range_ms=None, frame_interval_ms=500, directed=True, filename="latencies.mp4",
-                      latency_ms_cutoff_low=0, latency_ms_cutoff_high=15, ):
+                      latency_ms_cutoff_low=0, latency_ms_cutoff_high=15 ):
 
     # Create raster of when latencies occur. "Neurons" are now neuron pairs (n1,n2), where n1->n2
     latency_raster = {}
