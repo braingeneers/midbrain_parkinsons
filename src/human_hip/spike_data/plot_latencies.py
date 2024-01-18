@@ -8,7 +8,8 @@ from human_hip.spike_data import latencies, latency_times, plot_raster, plot_foo
 from braingeneers.analysis.analysis import SpikeData
 import warnings
 import diptest 
-
+import math
+import matplotlib.cm as cm
 
 
 ### Note: this code isn't done
@@ -24,7 +25,7 @@ def plot_raster_latency_pairs(sd, pairs):
 
 
 # The function creates  plot of arrows show the direction that information is flowing out of neurons
-def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75):
+def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0 ):
     """
     Inputs:
         pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
@@ -58,10 +59,14 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75):
     normalized = preprocessing.normalize(centered) * arrow_length if normalize else centered # make same lengths, unless told otherwise
     
     # Draw Arrows
+    cmap = cm.get_cmap('hsv')
     for i in range(len(starts)):
+        if math.dist(starts[i], ends[i]) < min_dist:
+            continue
+        angle = (math.atan2(-(ends[i][1]-starts[i][1]), ends[i][0]-starts[i][0]) + np.pi) / (2 * np.pi)
         arrow = FancyArrow( 
                 starts[i][0], starts[i][1], normalized[i][0], normalized[i][1], length_includes_head=True, head_width=25,
-                linewidth=1, color="red", alpha=0.7, edgecolor="red", facecolor="red" )
+                linewidth=1, color=cmap(angle), alpha=0.7 ) #color="red"
         plt.gca().add_patch(arrow)
 
 

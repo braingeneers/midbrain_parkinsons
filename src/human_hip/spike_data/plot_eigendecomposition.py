@@ -148,7 +148,9 @@ def plot_eigen_vector_layout(sd, vect, show_sttc=True, sttc_threshold=.1, plot_c
     plt.show()
 
 
-def plot_eigendecomposition_vector(sd, vector_index=0, use_sttc=True, show_sttc=False, sttc_threshold=0.1,  plot_color="magma"):
+def plot_eigendecomposition_vector(sd, vector_index=0, use_sttc=True, sttc_cutoff_high=1.1, show_sttc=False, show_threshold=0.1,  plot_color="magma"):
     sd_matrix = sd.spike_time_tilings() if use_sttc else correlation_matrix(sd)
+    if use_sttc:
+        sd_matrix = np.where(sd_matrix<sttc_cutoff_high, sd_matrix, sd_matrix*0)
     eigenvalues, eigenvectors = eigenvalues_eigenvectors(sd_matrix)
-    plot_eigen_vector_layout(sd, eigenvectors[:, vector_index], show_sttc, sttc_threshold,  plot_color )
+    plot_eigen_vector_layout(sd, eigenvectors[:, vector_index], show_sttc, show_threshold,  plot_color )
