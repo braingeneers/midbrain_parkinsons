@@ -1,7 +1,7 @@
 # Human_Hippocampus: ignore large datasets
-*data/ephys/*
-*.h5
-*.zip
+#*data/ephys/* added data to github
+#*.h5
+#*.zip
 # ignore credentials
 */credentials
 # ignore empy directories
