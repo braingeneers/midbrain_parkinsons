@@ -12,6 +12,7 @@ from .plot_footprint import *
 from .randomize import *
 from .latencies import *
 from .plot_latencies import *
+from .plot_waveform_layout import *
 
 
 # from .read_phy_files import read_phy_files

@@ -71,6 +71,32 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0 )
 
 
 
+def plot_latency_pair_hist(sd, pairs, latency_ms_cutoff_low=1, latency_ms_cutoff_high=15):
+    
+    # Get the x/y locations neurons and the distance between each pair
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+    starts = neuron_xy[ pairs[:,0] ]  # Get the x/y locations of the start and end neurons of each pair
+    ends = neuron_xy[ pairs[:,1] ]
+    pair_dists =  np.linalg.norm(ends-starts, axis=1) 
+
+    # Get the latency of each pair, and calculate the average latency distance for each pair
+    latency_counts = []
+    for pair in pairs:
+        latency_counts.append( len(latency_times( pair[0], pair[1], sd, ms_cutoff_low=latency_ms_cutoff_low, ms_cutoff_high=latency_ms_cutoff_high, positive_only=True )) )
+    latency_counts= np.array(latency_counts)
+    print(f"{np.mean(pair_dists):.0f} um -- average pair distance")
+    print(f"{np.sum(pair_dists*latency_counts)/np.sum(latency_counts):.0f} um -- average latency distance")
+
+    # Plot the histogram of the pair distances
+    plt.hist(pair_dists, bins=15, alpha=.5)
+    plt.title('Pair Distance Histogram')
+    plt.xlabel('Pair distance (um)')
+    plt.ylabel('Count')
+    plt.tight_layout()
+    plt.show()
 
 
 
