@@ -71,8 +71,17 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0 )
 
 
 
-def plot_latency_pair_hist(sd, pairs, latency_ms_cutoff_low=1, latency_ms_cutoff_high=15):
-    
+
+def plot_latency_dist_hist(sd, pairs, latency_ms_cutoff_low=1, latency_ms_cutoff_high=15):
+    """
+    Inputs:
+        sd: SpikeData object
+        pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
+        latency_ms_cutoff_low: integer, the lower bound of the latency cutoff
+        latency_ms_cutoff_high: integer, the upper bound of the latency cutoff
+    Outputs:
+        A plot depicting the histogram of the distances between each pair
+    """
     # Get the x/y locations neurons and the distance between each pair
     neuron_xy = []
     for neuron in sd.neuron_data[0].values():
@@ -97,6 +106,52 @@ def plot_latency_pair_hist(sd, pairs, latency_ms_cutoff_low=1, latency_ms_cutoff
     plt.ylabel('Count')
     plt.tight_layout()
     plt.show()
+
+
+
+def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1, late_cutoff_high=15):
+    """
+    Inputs:
+        sd: SpikeData object
+        pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
+        by_firing_rate: boolean, if True, the angle histogram will be weighted by the number of latencies for each pair
+        late_cutoff_low: integer, the lower bound of the latency cutoff
+        late_cutoff_high: integer, the upper bound of the latency cutoff
+    Outputs:
+        A plot depicting the histogram of the angles of the pairs
+    """
+    # Get the x/y locations of the start and end neurons of each pair
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+
+    # make pairs point in same direction
+    pairs = pairs                         # make a copy of pairs, this avoids some bug
+    for i in range(len(pairs)):
+        lag = np.median(latencies( pairs[i][0], pairs[i][1], sd, ms_cutoff_high=20))
+        if lag<0:
+            pairs[i] = [ pairs[i][1], pairs[i][0] ]
+
+    # Creat arrows show angle of information flow from a neuron
+    starts = neuron_xy[ pairs[:,0] ]  # Get the x/y locations of the start and end neurons of each pair
+    ends = neuron_xy[ pairs[:,1] ]
+    angle = np.arctan2(-(ends[:,1]-starts[:,1]), ends[:,0]-starts[:,0]) * -1
+
+    if by_firing_rate:
+        latency_counts = []
+        for pair in pairs:
+            latency_counts.append( len(latency_times( pair[0], pair[1], sd, ms_cutoff_low=late_cutoff_low, ms_cutoff_high=late_cutoff_high, positive_only=True )) )
+        latency_counts= np.array(latency_counts)
+        angle = np.repeat( angle, latency_counts )
+
+    # Plot histogram of arrow angles
+    #fig = plt.figure(figsize=(10,10)) #ax.set_rlim(-0.5,1)
+    ax=plt.axes(polar=True)
+    plt.title('Pair Angle Histogram')
+    hist=ax.hist(angle, density=True)
+    plt.show()
+
 
 
 
