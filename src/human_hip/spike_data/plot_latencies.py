@@ -158,7 +158,7 @@ def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1,
 
 def plot_pair_analysis( n1, n2, sd):
     
-    lag = np.median(latencies( n1, n2, sd, ms_cutoff=20))
+    lag = np.median(latencies( n1, n2, sd))
     if lag<0:
         start_i = n2
         end_i = n1
