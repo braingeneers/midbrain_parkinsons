@@ -23,7 +23,6 @@ def plot_raster_latency_pairs(sd, pairs):
     plot_raster( sd_latency )
 
 
-
 # The function creates  plot of arrows show the direction that information is flowing out of neurons
 def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0 ):
     """
