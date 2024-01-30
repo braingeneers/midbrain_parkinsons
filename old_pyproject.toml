@@ -22,5 +22,9 @@ Repository = "https://github.com/braingeneers/human_hippocampus.git"
 Changelog = ""
 Issues = "https://github.com/braingeneers/human_hippocampus/issues"
 
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatch.build]
 sources = ["src"]
