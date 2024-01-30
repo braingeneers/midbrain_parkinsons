@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 {
 	//"image":"ghcr.io/braingeneers/research:latest",
-	"image": "ghcr.io/braingeneers/research:sha256:548168a26b6d6581a304e3e81bd06f668ef7b10dbb5b5dc92b17eb7069bbaf19",
+	"image": "ghcr.io/braingeneers/research:2024.01.30",
 
 	"customizations": {
 		"vscode": {
