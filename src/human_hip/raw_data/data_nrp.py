@@ -38,11 +38,13 @@ def data_create(uuid, experiment_name, start_s, save_path, length_s=10):
     data_down = []  # the variable that will hold the downsambled data
     for i in channel_map[:,0].astype(int) : # we gather data for ever channel that was recorded from, (these channels are in the channel map of the metadata)
         data_down.append( signal.decimate( raw_data[i,:], 20 )  ) # we get everyt 20th data point, andthen append it to the data_down variable
+    del raw_data
     data_down = np.array( data_down ) # we turn the data into an np.array for easier future analysis
 
     print("Saving Data...")
     to_pickle = {"data": data_down, "xy": channel_map[:,1:3], "frame_rate": 20000/20, "uuid":uuid,
                   "file": metadata["ephys_experiments"][experiment_name]["blocks"][0]["path"] }
+    del data_down
     with open( save_path, 'wb') as filename:
         pickle.dump( to_pickle, filename)
     print("Done!")
