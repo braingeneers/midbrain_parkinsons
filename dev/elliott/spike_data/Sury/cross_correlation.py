@@ -51,7 +51,7 @@ def sparse_train(spike_train: list, bin_size=0.001):
 
 
 def functional_pair(spike_data, binary_bin_size=0.001, ccg_win=[-50, 50],
-                    func_latency=5, func_prob=0.00001, verbose=True):
+                    f22, func_prob=0.00001, verbose=True):
     """
     Note: the input spike times are in seconds!
     """

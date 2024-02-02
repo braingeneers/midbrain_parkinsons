@@ -4,23 +4,24 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import FancyArrow
 from sklearn import preprocessing
 import numpy as np
-from human_hip.spike_data import latencies, latency_times, plot_raster, plot_footprint
+from human_hip.spike_data import latencies, latency_times, plot_raster, plot_footprint, cross_sttc
 from braingeneers.analysis.analysis import SpikeData
 import warnings
 import diptest 
 import math
 import matplotlib.cm as cm
+from ipywidgets import interact_manual
 
 
 ### Note: this code isn't done
 # It should state whether or not to plot directed or underected latencies 
 # It should also pass all of the parameters used in plot_raster
-def plot_raster_latency_pairs(sd, pairs):
+def plot_raster_latency_pairs(sd, pairs, xlim=None ):
     latency_raster = []
     for pair in pairs:
         latency_raster.append( latency_times( pair[0], pair[1], sd, ms_cutoff_high=15, positive_only=False) )
     sd_latency = SpikeData(latency_raster)
-    plot_raster( sd_latency )
+    plot_raster( sd_latency, xlim=xlim )
 
 
 # The function creates  plot of arrows show the direction that information is flowing out of neurons
@@ -152,7 +153,13 @@ def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1,
     plt.show()
 
 
-
+def plot_cross_sttc_pairs( sd, good_pairs ):
+    @interact_manual
+    def showSttcs(num=(0,len(good_pairs)-1)):
+        print( "start neuron:", good_pairs[num,0] )
+        print( "end neuron:", good_pairs[num,1] )
+        plt.plot( cross_sttc( good_pairs[num,0], good_pairs[num,1], sd) )
+        plot_vector_layout( sd, np.array([good_pairs[num]]) , normalize=False )
 
 
 def plot_pair_analysis( n1, n2, sd):
