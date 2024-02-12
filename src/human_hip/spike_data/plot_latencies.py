@@ -16,16 +16,31 @@ from ipywidgets import interact_manual
 ### Note: this code isn't done
 # It should state whether or not to plot directed or underected latencies 
 # It should also pass all of the parameters used in plot_raster
-def plot_raster_latency_pairs(sd, pairs, xlim=None ):
+def plot_raster_latency_pairs(sd, pairs, xlim=None, size=(16,6) ):
     latency_raster = []
     for pair in pairs:
         latency_raster.append( latency_times( pair[0], pair[1], sd, ms_cutoff_high=15, positive_only=False) )
     sd_latency = SpikeData(latency_raster)
-    plot_raster( sd_latency, xlim=xlim )
+    plot_raster( sd_latency, xlim=xlim, size=size )
 
 
 # The function creates  plot of arrows show the direction that information is flowing out of neurons
-def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0 ):
+from matplotlib import pyplot as plt
+from matplotlib.patches import FancyArrow
+from sklearn import preprocessing
+import numpy as np
+from human_hip.spike_data import latencies, latency_times, plot_raster, plot_footprint, cross_sttc
+from braingeneers.analysis.analysis import SpikeData
+import warnings
+import diptest 
+import math
+import matplotlib.cm as cm
+from ipywidgets import interact_manual
+
+
+
+# The function creates  plot of arrows show the direction that information is flowing out of neurons
+def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0, image_path=None, xlim=None ):
     """
     Inputs:
         pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
@@ -43,7 +58,11 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0 )
 
     # Plot original scatter
     plt.figure(figsize=(8, 8))
+    if image_path is not None:
+        img = plt.imread(image_path)      # Load in image
+        plt.imshow(img,  extent=[0, 3850, 0, 2100]) 
     plt.scatter( neuron_xy[:,0], neuron_xy[:,1], alpha=0.15, c='grey')
+    plt.xlim( xlim )    
 
     # make pairs point in same direction
     pairs = pairs                         # make a copy of pairs, this avoids some bug
@@ -68,6 +87,8 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0 )
                 starts[i][0], starts[i][1], normalized[i][0], normalized[i][1], length_includes_head=True, head_width=25,
                 linewidth=1, color=cmap(angle), alpha=0.7 ) #color="red"
         plt.gca().add_patch(arrow)
+
+
 
 
 

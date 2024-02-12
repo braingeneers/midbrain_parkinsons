@@ -1,2 +1,2 @@
-from .histology import plot_histology
-__all__ = ["plot_histology"]
+from .histology import *
+#__all__ = ["plot_histology"]
