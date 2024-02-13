@@ -11,6 +11,7 @@ import diptest
 import math
 import matplotlib.cm as cm
 from ipywidgets import interact_manual
+from matplotlib.ticker import MaxNLocator
 
 
 ### Note: this code isn't done
@@ -24,23 +25,10 @@ def plot_raster_latency_pairs(sd, pairs, xlim=None, size=(16,6) ):
     plot_raster( sd_latency, xlim=xlim, size=size )
 
 
-# The function creates  plot of arrows show the direction that information is flowing out of neurons
-from matplotlib import pyplot as plt
-from matplotlib.patches import FancyArrow
-from sklearn import preprocessing
-import numpy as np
-from human_hip.spike_data import latencies, latency_times, plot_raster, plot_footprint, cross_sttc
-from braingeneers.analysis.analysis import SpikeData
-import warnings
-import diptest 
-import math
-import matplotlib.cm as cm
-from ipywidgets import interact_manual
-
 
 
 # The function creates  plot of arrows show the direction that information is flowing out of neurons
-def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0, image_path=None, xlim=None ):
+def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0, image_path=None, xlim=None, ylim=None, background_color="white" ):
     """
     Inputs:
         pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
@@ -58,11 +46,14 @@ def plot_vector_layout( sd, pairs, normalize=True, arrow_length=75, min_dist=0, 
 
     # Plot original scatter
     plt.figure(figsize=(8, 8))
+    ax = plt.axes()
+    ax.set_facecolor(background_color)
     if image_path is not None:
         img = plt.imread(image_path)      # Load in image
         plt.imshow(img,  extent=[0, 3850, 0, 2100]) 
     plt.scatter( neuron_xy[:,0], neuron_xy[:,1], alpha=0.15, c='grey')
-    plt.xlim( xlim )    
+    plt.xlim( xlim )
+    plt.ylim( ylim )    
 
     # make pairs point in same direction
     pairs = pairs                         # make a copy of pairs, this avoids some bug
@@ -130,6 +121,7 @@ def plot_latency_dist_hist(sd, pairs, latency_ms_cutoff_low=1, latency_ms_cutoff
 
 
 
+
 def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1, late_cutoff_high=15):
     """
     Inputs:
@@ -141,6 +133,59 @@ def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1,
     Outputs:
         A plot depicting the histogram of the angles of the pairs
     """
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+
+    # make pairs point in same direction
+    pairs = pairs                         # make a copy of pairs, this avoids some bug
+    for i in range(len(pairs)):
+        lag = np.median(latencies( pairs[i][0], pairs[i][1], sd, ms_cutoff_high=20))
+        if lag<0:
+            pairs[i] = [ pairs[i][1], pairs[i][0] ]
+
+    # Creat arrows show angle of information flow from a neuron
+    starts = neuron_xy[ pairs[:,0] ]  # Get the x/y locations of the start and end neurons of each pair
+    ends = neuron_xy[ pairs[:,1] ]
+    angle = np.arctan2(-(ends[:,1]-starts[:,1]), ends[:,0]-starts[:,0]) * -1
+
+    if by_firing_rate:
+        latency_counts = []
+        for pair in pairs:
+            latency_counts.append( len(latency_times( pair[0], pair[1], sd, ms_cutoff_low=late_cutoff_low, ms_cutoff_high=late_cutoff_high, positive_only=True )) )
+        latency_counts= np.array(latency_counts)
+        angle = np.repeat( angle, latency_counts )
+
+    #n_bins = 30  # You can adjust the number of bins here
+    counts, bin_edges = np.histogram(angle,  density=True)  #bins=n_bins,
+    bin_width = np.diff(bin_edges)
+    cmap = cm.get_cmap('hsv')
+    bin_angles= (bin_edges[:-1] - bin_edges.min()) / (bin_edges.max() - bin_edges.min())
+    bin_angles = bin_angles[::-1] #+ .05
+    bin_colors = cmap(bin_angles)
+
+    ax = plt.subplot(111, polar=True)
+    for idx, count in enumerate(counts):
+        ax.bar(bin_edges[idx], count, width=bin_width[idx], color=bin_colors[idx], align='edge')
+    #ax.set_yticks([0,.1,.2,.3,.4])
+    ax.yaxis.set_major_locator(MaxNLocator(5))
+    plt.title('Pair Angle Histogram')
+    plt.show()
+
+
+"""
+def old_plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1, late_cutoff_high=15):
+    ""
+    Inputs:
+        sd: SpikeData object
+        pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
+        by_firing_rate: boolean, if True, the angle histogram will be weighted by the number of latencies for each pair
+        late_cutoff_low: integer, the lower bound of the latency cutoff
+        late_cutoff_high: integer, the upper bound of the latency cutoff
+    Outputs:
+        A plot depicting the histogram of the angles of the pairs
+    ""
     # Get the x/y locations of the start and end neurons of each pair
     neuron_xy = []
     for neuron in sd.neuron_data[0].values():
@@ -172,7 +217,7 @@ def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1,
     plt.title('Pair Angle Histogram')
     hist=ax.hist(angle, density=True)
     plt.show()
-
+"""
 
 def plot_cross_sttc_pairs( sd, good_pairs ):
     @interact_manual
@@ -308,3 +353,73 @@ def plot_pair_analysis( n1, n2, sd):
 
 
 
+
+
+# def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1, late_cutoff_high=15):
+#     """
+#     Inputs:
+#         sd: SpikeData object
+#         pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
+#         by_firing_rate: boolean, if True, the angle histogram will be weighted by the number of latencies for each pair
+#         late_cutoff_low: integer, the lower bound of the latency cutoff
+#         late_cutoff_high: integer, the upper bound of the latency cutoff
+#     Outputs:
+#         A plot depicting the histogram of the angles of the pairs
+#     """
+#     neuron_xy = []
+#     for neuron in sd.neuron_data[0].values():
+#         neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+#     neuron_xy = np.array(neuron_xy)
+
+#     # make pairs point in same direction
+#     pairs = pairs                         # make a copy of pairs, this avoids some bug
+#     for i in range(len(pairs)):
+#         lag = np.median(latencies( pairs[i][0], pairs[i][1], sd, ms_cutoff_high=20))
+#         if lag<0:
+#             pairs[i] = [ pairs[i][1], pairs[i][0] ]
+
+#     # Creat arrows show angle of information flow from a neuron
+#     starts = neuron_xy[ pairs[:,0] ]  # Get the x/y locations of the start and end neurons of each pair
+#     ends = neuron_xy[ pairs[:,1] ]
+#     angle = np.arctan2(-(ends[:,1]-starts[:,1]), ends[:,0]-starts[:,0]) * -1
+
+#     if by_firing_rate:
+#         latency_counts = []
+#         for pair in pairs:
+#             latency_counts.append( len(latency_times( pair[0], pair[1], sd, ms_cutoff_low=late_cutoff_low, ms_cutoff_high=late_cutoff_high, positive_only=True )) )
+#         latency_counts= np.array(latency_counts)
+#         angle = np.repeat( angle, latency_counts )
+
+#     #n_bins = 30  # You can adjust the number of bins here
+#     counts, bin_edges = np.histogram(angle,  density=True)  #bins=n_bins,
+#     bin_width = np.diff(bin_edges)
+#     cmap = cm.get_cmap('hsv')
+
+
+#     # Categorize each angle into its respective bin
+#     bin_indices = np.digitize(angle, bin_edges)
+
+#     # Initialize an array to hold the mean value for each bin
+#     bin_means = np.zeros(len(bin_edges) - 1)
+
+#     # Calculate the mean of angles in each bin
+#     for i in range(1, len(bin_edges)):
+#         # Select angles that fall into the current bin
+#         angles_in_bin = angle[bin_indices == i]
+#         # Calculate mean if there are angles in the bin
+#         if angles_in_bin.size > 0:
+#             bin_means[i-1] = np.mean(angles_in_bin)
+#         else:
+#             bin_means[i-1] = 0#np.nan  # Use NaN for bins without angles
+#     bin_means = (bin_means+math.pi)/2/math.pi
+
+#     # Calculate the color for each bin based on its edge angle
+#     #bin_colors = cmap((bin_edges[:-1] - bin_edges.min()) / (bin_edges.max() - bin_edges.min()))
+#     bin_colors = cmap( bin_means[::-1] )
+
+#     ax = plt.subplot(111, polar=True)
+#     for idx, count in enumerate(counts):
+#         ax.bar(bin_edges[idx], count, width=bin_width[idx], color=bin_colors[idx], align='edge')
+#     #ax.set_yticks([0,.1,.2,.3,.4])
+#     ax.yaxis.set_major_locator(MaxNLocator(5))
+#     plt.show()
