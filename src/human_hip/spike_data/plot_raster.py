@@ -10,7 +10,7 @@ from scipy.ndimage import gaussian_filter1d
 import numpy as np
 
 
-def plot_raster( sd, title="", axs=None, xlim=None, smoothness=20, size=(16,6) ):
+def plot_raster( sd, title="", axs=None, xlim=None, ylim=None, smoothness=20, size=(16,6) ):
     pop_rate = sd.binned(bin_size=1)
     pop_fr = gaussian_filter1d(pop_rate.astype(float), sigma=smoothness)
     bins = np.linspace(0, sd.length, pop_rate.shape[0] ) #/1000
@@ -37,6 +37,7 @@ def plot_raster( sd, title="", axs=None, xlim=None, smoothness=20, size=(16,6) )
     axs1.set_xlabel("Time (ms)", fontsize=16)
     axs1.yaxis.set_tick_params(labelsize=16)
     axs1.set_xlim(xlim)
+    axs1.set_ylim(ylim)
     #axs1.set_ylim(ylim)
 
     axs1.spines['top'].set_visible(False)
