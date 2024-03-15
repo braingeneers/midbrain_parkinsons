@@ -10,7 +10,8 @@ from scipy.ndimage import gaussian_filter1d
 import numpy as np
 
 
-def plot_raster( sd, title="", axs=None, xlim=None, ylim=None, smoothness=20, size=(16,6) ):
+
+def plot_raster( sd, title="", opto=[], axs=None, xlim=None, ylim=None, smoothness=20, size=(16,6) ):
     pop_rate = sd.binned(bin_size=1)
     pop_fr = gaussian_filter1d(pop_rate.astype(float), sigma=smoothness)
     bins = np.linspace(0, sd.length, pop_rate.shape[0] ) #/1000
@@ -27,7 +28,9 @@ def plot_raster( sd, title="", axs=None, xlim=None, ylim=None, smoothness=20, si
     axs.set_ylabel("Unit", fontsize=16)
     axs.xaxis.set_tick_params(labelsize=16)
     axs.yaxis.set_tick_params(labelsize=16)
-    
+    for row in opto:
+        axs.axvspan(row[0], row[1], color='#00FF00', alpha=0.15) 
+
     axs1 = axs.twinx()
     axs1.yaxis.set_label_position("right") 
     axs1.spines['right'].set_color('r')
@@ -47,7 +50,6 @@ def plot_raster( sd, title="", axs=None, xlim=None, ylim=None, smoothness=20, si
     axs1.tick_params(axis='y', colors='r')
 
     return axs, axs1
-
 
 
 
