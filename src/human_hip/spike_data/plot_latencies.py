@@ -174,9 +174,9 @@ def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1,
     plt.show()
 
 
-"""
+
 def old_plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1, late_cutoff_high=15):
-    ""
+    """
     Inputs:
         sd: SpikeData object
         pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
@@ -185,7 +185,7 @@ def old_plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_lo
         late_cutoff_high: integer, the upper bound of the latency cutoff
     Outputs:
         A plot depicting the histogram of the angles of the pairs
-    ""
+    """
     # Get the x/y locations of the start and end neurons of each pair
     neuron_xy = []
     for neuron in sd.neuron_data[0].values():
@@ -217,7 +217,7 @@ def old_plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_lo
     plt.title('Pair Angle Histogram')
     hist=ax.hist(angle, density=True)
     plt.show()
-"""
+
 
 def plot_cross_sttc_pairs( sd, good_pairs ):
     @interact_manual
