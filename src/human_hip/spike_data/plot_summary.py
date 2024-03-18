@@ -3,8 +3,49 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import gaussian_filter1d
-
 from human_hip.spike_data.analysis import firing_rates, ISI
+
+
+
+def plot_sttc_layout(sd,  sttc_threshold=.1, xlim=None, ylim=None):
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+    plt.figure(figsize=(8, 8))
+    plt.scatter( neuron_xy[:,0], neuron_xy[:,1], alpha=0.15, c='b') 
+    plt.xlim( xlim )
+    plt.ylim( ylim ) 
+    plt.xlabel(r'$\mu m$')  
+    plt.ylabel(r'$\mu m$')  
+    plt.title("STTC Layout Plot")
+
+    sttc = sd.spike_time_tilings()
+    for i in range(sttc.shape[0]): # plot connectivity lines between neurons
+        for j in range(sttc.shape[1]):
+            # Only need to do upper triangle since sttc' = sttc
+            if i<=j: continue
+            if sttc[i,j] < sttc_threshold : continue
+            #Position of neuron i
+            ix,iy = sd.neuron_data[0][i]['position']
+            jx,jy = sd.neuron_data[0][j]['position']
+            # Plot line between the points, linewidth is the sttc
+            plt.plot([ix,jx],[iy,jy], linewidth=sttc[i,j],c='k')
+
+
+def plot_firing_rate(sd, xlim=None, ylim=None, exp=2, scale=20):
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+    plt.figure(figsize=(8, 8))
+    my_firing_rates = firing_rates(sd)
+    plt.scatter(neuron_xy[:,0], neuron_xy[:,1], s=(my_firing_rates**exp)*scale, c="red", alpha=0.3)
+    plt.xlim( xlim )
+    plt.ylim( ylim ) 
+    plt.xlabel(r'$\mu m$')  
+    plt.ylabel(r'$\mu m$')  
+    plt.title("Firing Rate Layout Plot")
 
 
 

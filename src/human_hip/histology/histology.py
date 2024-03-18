@@ -5,7 +5,7 @@ from matplotlib.patches import Patch
 import pandas as pd
 
 
-def plot_histology(sd, image_path, electrodes=True, neurons=True, xlim=(0, 3850), ylim=(0, 2100), electrode_mapping=None ):
+def plot_histology(sd, image_path, neuron_color="magenta", electrodes=True, neurons=True, xlim=(0, 3850), ylim=(0, 2100), electrode_mapping=None ):
     """
     Function: Plots histology image with electrodes and neurons overlaid.
     Inputs: 
@@ -37,10 +37,10 @@ def plot_histology(sd, image_path, electrodes=True, neurons=True, xlim=(0, 3850)
         for key,val in sd.neuron_data[0].items():
             neuron_x.append( val["position"][0] )
             neuron_y.append( val["position"][1] )
-        plt.scatter( neuron_x, neuron_y,  c='magenta', alpha=.6, s=50 )  
+        plt.scatter( neuron_x, neuron_y,  c=neuron_color, alpha=.8, s=50 )  
 
     #add legend, axises limits, labels,  and title
-    legend_elements = [Patch(facecolor="darkorange"), Patch(facecolor="magenta") ]   # Create colors in legend
+    legend_elements = [Patch(facecolor="darkorange"), Patch(facecolor=neuron_color) ]   # Create colors in legend
     plt.legend(legend_elements, ["Electrode","Neuron"])       # Add legend
     plt.xlim( xlim[0], xlim[1] )                                       # Set axis limits to that of the MEA
     plt.ylim( ylim[0], ylim[1])
@@ -52,7 +52,7 @@ def plot_histology(sd, image_path, electrodes=True, neurons=True, xlim=(0, 3850)
 
 
 
-def plot_histology_electrode_map(sd, electrode_mapping, image_path, electrodes=True, neurons=True, xlim=(0, 3850), ylim=(0, 2100) ):
+def plot_histology_electrode_map(sd, electrode_mapping, image_path, neuron_color="magenta", electrodes=True, neurons=True, xlim=(0, 3850), ylim=(0, 2100) ):
     """
     Function: Plots histology image with electrodes and neurons overlaid.
     Inputs: 
@@ -82,10 +82,10 @@ def plot_histology_electrode_map(sd, electrode_mapping, image_path, electrodes=T
         for key,val in sd.neuron_data[0].items():
             neuron_x.append( val["position"][0] )
             neuron_y.append( val["position"][1] )
-        plt.scatter( neuron_x, neuron_y,  c='magenta', alpha=.6, s=50 )  
+        plt.scatter( neuron_x, neuron_y,  c=neuron_color, alpha=.8, s=50 )  
 
     #add legend, axises limits, labels,  and title
-    legend_elements = [Patch(facecolor="darkorange"), Patch(facecolor="magenta") ]   # Create colors in legend
+    legend_elements = [Patch(facecolor="darkorange"), Patch(facecolor=neuron_color) ]   # Create colors in legend
     plt.legend(legend_elements, ["Electrode","Neuron"])       # Add legend
     plt.xlim( xlim[0], xlim[1] )                                       # Set axis limits to that of the MEA
     plt.ylim( ylim[0], ylim[1])
