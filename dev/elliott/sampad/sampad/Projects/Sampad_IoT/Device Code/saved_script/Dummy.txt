@@ -1,0 +1,18 @@
+main
+o1
+call wait 1
+c1
+call wait 2
+call func 4
+end
+
+func
+c2
+call wait 1
+o2
+call wait 1
+end
+
+wait
+w1000
+end

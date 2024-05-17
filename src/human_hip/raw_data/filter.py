@@ -49,14 +49,24 @@ def butter_filter(data, lowcut=None, highcut=None, fs=20000.0, order=5):
     filtered_traces = signal.sosfiltfilt(filter_coeff, data, axis=axis)
     return filtered_traces
 
-
-
+# Methd from one paper
 def get_brain_waves(data, fs=20000):
     waves = { "original": data, "basic": butter_filter( data, lowcut=0.1, highcut=100, fs=fs) }
-    waves["low"]   = butter_filter( waves["basic"],  0.1, 0.5, fs=fs)
-    waves["delta"] = butter_filter( waves["basic"], 0.5, 4, fs=fs)
-    waves["theta"] = butter_filter( waves["basic"], 4, 8, fs=fs)
-    waves["alpha"] = butter_filter( waves["basic"], 8, 13, fs=fs)
-    waves["beta"]  = butter_filter( waves["basic"], 13, 30, fs=fs)
-    waves["gamma"] = butter_filter( waves["basic"], 30, 50, fs=fs)
+    waves["low"]   = butter_filter( data,  0.1, 0.5, fs=fs)
+    waves["delta"] = butter_filter( data, 0.5, 4, fs=fs)
+    waves["theta"] = butter_filter( data, 4, 8, fs=fs)
+    waves["alpha"] = butter_filter( data, 8, 13, fs=fs)
+    waves["beta"]  = butter_filter( data, 13, 30, fs=fs)
+    waves["gamma"] = butter_filter( data, 30, 50, fs=fs)
     return waves
+
+# Method from another paper
+# def get_brain_waves2(data, fs=20000):
+#     waves = { "original": data, "basic": butter_filter( data, lowcut=0.1, highcut=100, fs=fs) }
+#     waves["low"]   = butter_filter( waves["basic"],  0.1, 0.5, fs=fs)
+#     waves["delta"] = butter_filter( waves["basic"], 0.5, 4, fs=fs)
+#     waves["theta"] = butter_filter( waves["basic"], 4, 8, fs=fs)
+#     waves["alpha"] = butter_filter( waves["basic"], 8, 13, fs=fs)
+#     waves["beta"]  = butter_filter( waves["basic"], 13, 30, fs=fs)
+#     waves["gamma"] = butter_filter( waves["basic"], 30, 50, fs=fs)
+#     return waves

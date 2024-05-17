@@ -1,0 +1,72 @@
+main
+c1
+c2
+c3
+c4
+c5
+c6
+c7
+c8
+c9
+c10
+c11
+c12
+c13
+c14
+c15
+c16
+call wait 1
+o1
+call wait 1
+o2
+call wait 1
+o3
+call wait 1
+o4
+call wait 1
+o5
+call wait 1
+o6
+call wait 1
+o7
+call wait 1
+o8
+call wait 1
+o9
+call wait 1
+o10
+call wait 1
+o11
+call wait 1
+o12
+call wait 1
+o13
+call wait 1
+o14
+call wait 1
+o15
+call wait 1
+o16
+call wait 1
+c1
+c2
+c3
+c4
+c5
+c6
+c7
+c8
+c9
+c10
+c11
+c12
+c13
+c14
+c15
+c16
+end
+
+wait
+w800
+end
+
