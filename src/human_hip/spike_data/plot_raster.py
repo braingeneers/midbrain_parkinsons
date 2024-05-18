@@ -18,14 +18,14 @@ def plot_raster( sd, title="", opto=[], axs=None, xlim=None, ylim=None, smoothne
     
     if axs is None:
         fig, axs = plt.subplots(1, 1, figsize=size )
-    axs.set_title(title, fontsize=12)
+    axs.set_title(title, fontsize=22)
 
     y = 0
     for vv in sd.train:
         axs.scatter(vv/1000, [y]*len(vv), marker="|", c='k', s=4, alpha=0.7)
         y += 1
     axs.set_xlabel("Time (s)", fontsize=16)
-    axs.set_ylabel("Unit", fontsize=16)
+    axs.set_ylabel("Neural Unit", fontsize=16)
     axs.xaxis.set_tick_params(labelsize=16)
     axs.yaxis.set_tick_params(labelsize=16)
     for row in opto:
