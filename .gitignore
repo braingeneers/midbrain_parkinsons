@@ -7,6 +7,7 @@
 # ignore empy directories
 */.DS_Store
 */hc5.2_chip18790_baseline_rec5.10.23.raw.h5
+*/all_pair_latencies*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
