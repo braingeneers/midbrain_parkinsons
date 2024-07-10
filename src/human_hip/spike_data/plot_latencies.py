@@ -26,8 +26,6 @@ def plot_raster_latency_pairs(sd, pairs, xlim=None, size=(16,6) ):
 
 
 
-
-
 # The function creates  plot of arrows show the direction that information is flowing out of neurons
 def plot_vector_layout( sd, pairs, normalize=True, plot_neuron=True, arrow_length=75, min_dist=0, image_path=None, xlim=None, ylim=None, background_color="white" ):
     """
@@ -244,6 +242,184 @@ def plot_vector_layout3( sd, pairs, image_path=None, figsize=(8, 8), xlim=None, 
         plt.gca().add_patch(arrow)
 
 
+def plot_vector_layout4( sd, pairs, image_path=None, figsize=(8, 8), xlim=None, ylim=None, 
+                         sd_cuttoff=100 , latency_ms=30):
+
+    # make sure all latencies have positive mean
+    # pairs = pairs    # ?avoid bug? 
+    # mean_latencies = []
+    # for pair in pairs:
+    #     mean_latency = np.mean( latencies( pair[0], pair[1], sd, ms_cutoff_high=latency_ms)  )
+    #     mean_latencies.append(mean_latency)
+    # print("all final pairs positive?:", np.all( np.array(mean_latencies)>0 ))
+
+    # Get the x/y locations of the start and end neurons of each pair
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+
+    # Latencies count                  
+    latency_counts = []
+    for pair in pairs:
+        latency_counts.append( len(latency_times( pair[0], pair[1], sd, ms_cutoff_high=latency_ms, positive_only=True )) )
+
+    # Creat arrows show angle of information flow from a neuron
+    starts = neuron_xy[ [pair[0] for pair in pairs] ]  # Get the x/y locations of the start and end neurons of each pair
+    ends = neuron_xy[ [pair[1] for pair in pairs] ]
+    centered = ends-starts   # Get the directions of arrows, then make of of them the same length
+    normalized = preprocessing.normalize(centered) #* 75
+    angles = np.arctan2( normalized[:, 1], normalized[:, 0] ) 
+
+    # clump by starting pair angle counted by angle
+    pair_dict = {}
+    for i in range(len(pairs)):
+        key, value = pairs[i]
+        if key in pair_dict:
+            pair_dict[key] = pair_dict[key] + [ angles[i] ] * latency_counts[i]
+        else:
+            pair_dict[key] = [ angles[i] ] * latency_counts[i]
+
+    # create new dictionary of just mean angles
+    pair_angles = {}
+    pair_sd = {}
+    for key, value in pair_dict.items():
+        pair_angles[key] = sum(value) / len(value)
+        pair_sd[key] = np.std(value, ddof=1) #/ len(value)
+
+    # Plot original scatter
+    plt.figure(figsize=(8, 8))
+    ax = plt.axes()
+    if image_path is not None:
+        img = plt.imread(image_path)      # Load in image
+        plt.imshow(img,  extent=[0, 3850, 0, 2100]) 
+    plt.xlim( xlim )
+    plt.ylim( ylim )    
+
+    # Draw Arrows
+    cmap = cm.get_cmap('hsv')
+    pair_removed = 0
+    for pair, angle in pair_angles.items():
+        if pair_sd[pair] < sd_cuttoff :
+            angle2 = (angle*-1+ np.pi)/np.pi/2
+            start = neuron_xy[ pair ]  
+            arrow = FancyArrow( 
+                    start[0], start[1], np.cos(angle)*75 , np.sin(angle)*75, length_includes_head=True, head_width=25,
+                    linewidth=1, color=cmap(angle2,alpha=0.9)  ) #color="red"
+            plt.gca().add_patch(arrow)
+        else:
+            pair_removed = pair_removed + 1
+    print("Pairs removed by SD cutoff:", pair_removed )
+
+
+
+
+################
+################
+# Code use to create vector plots
+################
+###############
+
+
+################
+# helper functions
+def rotate_angles( angles, add=1):
+    adjusted_angles = []
+    for num in angles:
+        num += add         # Add 1 to the number
+        adjusted_num = ((num + math.pi) % (2 * math.pi)) - math.pi  # modulo operation to wrap within -pi to pi
+        adjusted_angles.append(adjusted_num)
+    return adjusted_angles
+
+def rotated_sd( angles ):
+    sds = []
+    for i in range(-3,1): #[-3,1]
+        sds.append( np.std( rotate_angles(angles, add=i), ddof=1) )
+    return min(sds)
+
+def rotated_mean( angles ):
+    sds = []
+    means = []
+    for i in range(-3,1): #[-3,1]
+        new_angles = rotate_angles(angles, add=i)
+        sds.append( np.std( new_angles, ddof=1) )
+        new_mean = np.mean(new_angles) - i 
+        adjusted_mean = ((new_mean + math.pi) % (2 * math.pi)) - math.pi
+        means.append( adjusted_mean   ) 
+    return means[np.argmin(sds)]
+
+################
+# Main Code
+def plot_vector_layout5( sd, pairs, image_path=None, figsize=(8, 8), xlim=None, ylim=None, 
+                         sd_cuttoff=100 , latency_ms=30):
+
+    # make sure all latencies have positive mean
+    # pairs = pairs    # ?avoid bug? 
+    # mean_latencies = []
+    # for pair in pairs:
+    #     mean_latency = np.mean( latencies( pair[0], pair[1], sd, ms_cutoff_high=latency_ms)  )
+    #     mean_latencies.append(mean_latency)
+    # print("all final pairs positive?:", np.all( np.array(mean_latencies)>0 ))
+
+    # Get the x/y locations of the start and end neurons of each pair
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+
+    # Latencies count                  
+    latency_counts = []
+    for pair in pairs:
+        latency_counts.append( len(latency_times( pair[0], pair[1], sd, ms_cutoff_high=latency_ms, positive_only=True )) )
+
+    # Creat arrows show angle of information flow from a neuron
+    starts = neuron_xy[ [pair[0] for pair in pairs] ]  # Get the x/y locations of the start and end neurons of each pair
+    ends = neuron_xy[ [pair[1] for pair in pairs] ]
+    centered = ends-starts   # Get the directions of arrows, then make of of them the same length
+    normalized = preprocessing.normalize(centered) #* 75
+    angles = np.arctan2( normalized[:, 1], normalized[:, 0] ) 
+
+    # clump by starting pair angle counted by angle
+    pair_dict = {}
+    for i in range(len(pairs)):
+        key, value = pairs[i]
+        if key in pair_dict:
+            pair_dict[key] = pair_dict[key] + [ angles[i] ] * latency_counts[i]
+        else:
+            pair_dict[key] = [ angles[i] ] * latency_counts[i]
+
+    # create new dictionary of just mean angles
+    pair_angles = {}
+    pair_sd = {}
+    for key, value in pair_dict.items():
+        pair_angles[key] =  rotated_mean( value ) #sum(value) / len(value)
+        pair_sd[key] = rotated_sd( value ) #/ len(value)
+
+    # Plot original scatter
+    plt.figure(figsize=(8, 8))
+    ax = plt.axes()
+    if image_path is not None:
+        img = plt.imread(image_path)      # Load in image
+        plt.imshow(img,  extent=[0, 3850, 0, 2100]) 
+    plt.xlim( xlim )
+    plt.ylim( ylim )    
+
+    # Draw Arrows
+    cmap = cm.get_cmap('hsv')
+    pair_removed = 0
+    for pair, angle in pair_angles.items():
+        if pair_sd[pair] < sd_cuttoff :
+            angle2 = (angle*-1+ np.pi)/np.pi/2
+            start = neuron_xy[ pair ]  
+            arrow = FancyArrow( 
+                    start[0], start[1], np.cos(angle)*75 , np.sin(angle)*75, length_includes_head=True, head_width=25,
+                    linewidth=1, color=cmap(angle2,alpha=0.9)  ) #color="red"
+            plt.gca().add_patch(arrow)
+        else:
+            pair_removed = pair_removed + 1
+    print("Pairs removed by SD cutoff:", pair_removed )
+
+
 
 
 # # The function creates  plot of arrows show the direction that information is flowing out of neurons
@@ -300,68 +476,68 @@ def plot_vector_layout3( sd, pairs, image_path=None, figsize=(8, 8), xlim=None, 
 #         plt.gca().add_patch(arrow)
 
 
-def plot_vector_layout4( sd, pairs, image_path=None, figsize=(8, 8), xlim=None, ylim=None, ms_cutoff_high=20, se_cuttoff=.1 ):
+# def plot_vector_layout4( sd, pairs, image_path=None, figsize=(8, 8), xlim=None, ylim=None, ms_cutoff_high=20, se_cuttoff=.1 ):
 
-    # Get the x/y locations of the start and end neurons of each pair
-    neuron_xy = []
-    for neuron in sd.neuron_data[0].values():
-        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
-    neuron_xy = np.array(neuron_xy)
+#     # Get the x/y locations of the start and end neurons of each pair
+#     neuron_xy = []
+#     for neuron in sd.neuron_data[0].values():
+#         neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+#     neuron_xy = np.array(neuron_xy)
 
-    # Latencies count
-    pairs = pairs                      # make a copy of pairs, this avoids some bug
-    latencies_count = []
-    for i in range(len(pairs)):
-        pair_latencies = latencies( pairs[i][0], pairs[i][1], sd, ms_cutoff_high=20)
-        latencies_count.append(len(pair_latencies))
-        if np.median(pair_latencies)<0:
-            pairs[i] = [ pairs[i][1], pairs[i][0] ]
+#     # Latencies count
+#     pairs = pairs                      # make a copy of pairs, this avoids some bug
+#     latencies_count = []
+#     for i in range(len(pairs)):
+#         pair_latencies = latencies( pairs[i][0], pairs[i][1], sd, ms_cutoff_high=20)
+#         latencies_count.append(len(pair_latencies))
+#         if np.median(pair_latencies)<0:
+#             pairs[i] = [ pairs[i][1], pairs[i][0] ]
 
-    starts = neuron_xy[ pairs[:,0] ]  # Get the x/y locations of the start and end neurons of each pair
-    ends = neuron_xy[ pairs[:,1] ]
-    centered = ends-starts   # Get the directions of arrows, then make of of them the same length
-    normalized = preprocessing.normalize(centered) #* 75
-    angles = np.arctan2( normalized[:, 1], normalized[:, 0] ) 
+#     starts = neuron_xy[ pairs[:,0] ]  # Get the x/y locations of the start and end neurons of each pair
+#     ends = neuron_xy[ pairs[:,1] ]
+#     centered = ends-starts   # Get the directions of arrows, then make of of them the same length
+#     normalized = preprocessing.normalize(centered) #* 75
+#     angles = np.arctan2( normalized[:, 1], normalized[:, 0] ) 
 
-    # clump by starting pair angle counted by angle
-    pair_dict = {}
-    for i in range(len(pairs)):
-        key, value = pairs[i]
-        if key in pair_dict:
-            pair_dict[key] = pair_dict[key] + [ angles[i] ] * latencies_count[i]
-        else:
-            pair_dict[key] = [ angles[i] ] * latencies_count[i]
+#     # clump by starting pair angle counted by angle
+#     pair_dict = {}
+#     for i in range(len(pairs)):
+#         key, value = pairs[i]
+#         if key in pair_dict:
+#             pair_dict[key] = pair_dict[key] + [ angles[i] ] * latencies_count[i]
+#         else:
+#             pair_dict[key] = [ angles[i] ] * latencies_count[i]
 
-    # create new dictionary of just mean angles
-    pair_angles = {}
-    pair_se = {}
-    for key, value in pair_dict.items():
-        pair_angles[key] = sum(value) / len(value)
-        pair_se[key] = np.std(value, ddof=1) / len(value)
+#     # create new dictionary of just mean angles
+#     pair_angles = {}
+#     pair_se = {}
+#     for key, value in pair_dict.items():
+#         pair_angles[key] = sum(value) / len(value)
+#         pair_se[key] = np.std(value, ddof=1) / len(value)
 
-    # Plot original scatter
-    plt.figure(figsize=(8, 8))
-    ax = plt.axes()
-    if image_path is not None:
-        img = plt.imread(image_path)      # Load in image
-        plt.imshow(img,  extent=[0, 3850, 0, 2100]) 
-    plt.xlim( xlim )
-    plt.ylim( ylim )    
+#     # Plot original scatter
+#     plt.figure(figsize=(8, 8))
+#     ax = plt.axes()
+#     if image_path is not None:
+#         img = plt.imread(image_path)      # Load in image
+#         plt.imshow(img,  extent=[0, 3850, 0, 2100]) 
+#     plt.xlim( xlim )
+#     plt.ylim( ylim )    
 
-    # Draw Arrows
-    cmap = cm.get_cmap('hsv')
-    pair_removed = 0
-    for pair, angle in pair_angles.items():
-        if pair_se[pair] < se_cuttoff :
-            angle2 = (angle*-1+ np.pi)/np.pi/2
-            start = neuron_xy[ pair ]  
-            arrow = FancyArrow( 
-                    start[0], start[1], np.cos(angle)*75 , np.sin(angle)*75, length_includes_head=True, head_width=25,
-                    linewidth=1, color=cmap(angle2,alpha=0.9)  ) #color="red"
-            plt.gca().add_patch(arrow)
-        else:
-            pair_removed = pair_removed + 1
-    print("Pairs removed by SE cutoff:", pair_removed )
+#     # Draw Arrows
+#     cmap = cm.get_cmap('hsv')
+#     pair_removed = 0
+#     for pair, angle in pair_angles.items():
+#         if pair_se[pair] < se_cuttoff :
+#             angle2 = (angle*-1+ np.pi)/np.pi/2
+#             start = neuron_xy[ pair ]  
+#             arrow = FancyArrow( 
+#                     start[0], start[1], np.cos(angle)*75 , np.sin(angle)*75, length_includes_head=True, head_width=25,
+#                     linewidth=1, color=cmap(angle2,alpha=0.9)  ) #color="red"
+#             plt.gca().add_patch(arrow)
+#         else:
+#             pair_removed = pair_removed + 1
+#     print("Pairs removed by SE cutoff:", pair_removed )
 
 
 
@@ -404,6 +580,66 @@ def plot_latency_dist_hist(sd, pairs, latency_ms_cutoff_low=1, latency_ms_cutoff
 
 
 def plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1, late_cutoff_high=15):
+    """
+    Inputs:
+        sd: SpikeData object
+        pairs: np.array of neuron indices (as pairs) for which a connection exists, ex: [[0,1], [0,2], [2,3]]
+        by_firing_rate: boolean, if True, the angle histogram will be weighted by the number of latencies for each pair
+        late_cutoff_low: integer, the lower bound of the latency cutoff
+        late_cutoff_high: integer, the upper bound of the latency cutoff
+    Outputs:
+        A plot depicting the histogram of the angles of the pairs
+    """
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+
+    mean_latencies = []
+    for pair in pairs:
+        mean_latency = np.mean( latencies( pair[0], pair[1], sd, ms_cutoff_high=late_cutoff_high)  )
+        mean_latencies.append(mean_latency)
+    print("all final pairs positive?:", np.all( np.array(mean_latencies)>0 ))
+
+    # make pairs point in same direction
+    #pairs = pairs                         # make a copy of pairs, this avoids some bug
+    for i in range(len(pairs)):
+        lag = np.mean(latencies( pairs[i][0], pairs[i][1], sd, ms_cutoff_high=late_cutoff_high))
+        if lag<0:
+            pairs[i] = [ pairs[i][1], pairs[i][0] ]
+            print("WARNING: Some Latency pairs switched")
+
+    # Creat arrows show angle of information flow from a neuron
+    starts = neuron_xy[ [pair[0] for pair in pairs] ]  # Get the x/y locations of the start and end neurons of each pair
+    ends = neuron_xy[ [pair[1] for pair in pairs] ]
+    angle = np.arctan2(-(ends[:,1]-starts[:,1]), ends[:,0]-starts[:,0]) * -1
+
+    if by_firing_rate:
+        latency_counts = []
+        for pair in pairs:
+            latency_counts.append( len(latency_times( pair[0], pair[1], sd, ms_cutoff_low=late_cutoff_low, ms_cutoff_high=late_cutoff_high, positive_only=True )) )
+        latency_counts= np.array(latency_counts)
+        angle = np.repeat( angle, latency_counts )
+
+    #n_bins = 30  # You can adjust the number of bins here
+    counts, bin_edges = np.histogram(angle,  density=True)  #bins=n_bins,
+    bin_width = np.diff(bin_edges)
+    cmap = cm.get_cmap('hsv')
+    bin_angles= (bin_edges[:-1] - bin_edges.min()) / (bin_edges.max() - bin_edges.min())
+    bin_angles = bin_angles[::-1] #+ .05
+    bin_colors = cmap(bin_angles)
+
+    ax = plt.subplot(111, polar=True)
+    for idx, count in enumerate(counts):
+        ax.bar(bin_edges[idx], count, width=bin_width[idx], color=bin_colors[idx], align='edge')
+    #ax.set_yticks([0,.1,.2,.3,.4])
+    ax.yaxis.set_major_locator(MaxNLocator(5))
+    plt.title('Pair Angle Histogram')
+    plt.show()
+
+
+
+def old2_plot_latency_angle_hist( sd, pairs, by_firing_rate=False, late_cutoff_low=1, late_cutoff_high=15):
     """
     Inputs:
         sd: SpikeData object
