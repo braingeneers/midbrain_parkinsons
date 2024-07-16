@@ -1089,3 +1089,74 @@ def plot_pair_analysis( n1, n2, sd):
 #     #ax.set_yticks([0,.1,.2,.3,.4])
 #     ax.yaxis.set_major_locator(MaxNLocator(5))
 #     plt.show()
+
+
+
+def arrow_check(sd):
+    # Get all neuron positions
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+
+    # Get all angles between neuron paris
+    pair_angles = []                     # get list (without duplicates) of all pairs angles
+    for i in range(sd.N):
+        for j in range(i+1,sd.N):
+            start=neuron_xy[i]
+            end=neuron_xy[j]
+            angle = np.arctan2(-(end[1]-start[1]), end[0]-start[0]) * -1
+            pair_angles.append( angle )
+
+    #n_bins = 30  # You can adjust the number of bins here
+    counts, bin_edges = np.histogram(pair_angles,  density=True)  #bins=n_bins,
+    bin_width = np.diff(bin_edges)
+    cmap = cm.get_cmap('hsv')
+    bin_angles= (bin_edges[:-1] - bin_edges.min()) / (bin_edges.max() - bin_edges.min())
+    bin_angles = bin_angles[::-1] #+ .05
+    bin_colors = cmap(bin_angles)
+
+    ax = plt.subplot(111, polar=True)
+    for idx, count in enumerate(counts):
+        ax.bar(bin_edges[idx], count, width=bin_width[idx], color=bin_colors[idx], align='edge')
+    #ax.set_yticks([0,.1,.2,.3,.4])
+    ax.yaxis.set_major_locator(MaxNLocator(5))
+    plt.title('Pair Angle Histogram')
+    plt.show()
+
+
+
+
+def arrow_check2(sd):
+    # Get all neuron positions
+    neuron_xy = []
+    for neuron in sd.neuron_data[0].values():
+        neuron_xy.append( [neuron['position'][0], neuron['position'][1]] )
+    neuron_xy = np.array(neuron_xy)
+
+    # Get all angles between neuron paris
+    pair_angles = []                     # get list (without duplicates) of all pairs angles
+    for i in range(sd.N):
+        for j in range(sd.N):
+            if i==j:
+                continue
+            start=neuron_xy[i]
+            end=neuron_xy[j]
+            angle = np.arctan2(-(end[1]-start[1]), end[0]-start[0]) * -1
+            pair_angles.append( angle )
+
+    #n_bins = 30  # You can adjust the number of bins here
+    counts, bin_edges = np.histogram(pair_angles,  density=True)  #bins=n_bins,
+    bin_width = np.diff(bin_edges)
+    cmap = cm.get_cmap('hsv')
+    bin_angles= (bin_edges[:-1] - bin_edges.min()) / (bin_edges.max() - bin_edges.min())
+    bin_angles = bin_angles[::-1] #+ .05
+    bin_colors = cmap(bin_angles)
+
+    ax = plt.subplot(111, polar=True)
+    for idx, count in enumerate(counts):
+        ax.bar(bin_edges[idx], count, width=bin_width[idx], color=bin_colors[idx], align='edge')
+    #ax.set_yticks([0,.1,.2,.3,.4])
+    ax.yaxis.set_major_locator(MaxNLocator(5))
+    plt.title('Pair Angle Histogram')
+    plt.show()
