@@ -6,6 +6,8 @@ python3 -m pip install -e /workspaces/human_hippocampus
 python3 -m pip install diptest
 python3 -m pip install PyWavelets
 python3 -m pip install spkit
+python3 -m pip install astropy
+python3 -m pip install statsmodels
 
 # # Loop through the dataset names to download them for S3
 # for data in "2023-04-02-e-hc328_unperturbed/derived/"  "2022-11-02-e-Hc11.1-chip16753/derived/" "2023-05-10-e-hc52_18790_unperturbed/derived/" "2023-05-10-e-hc52_18790/derived/" 
