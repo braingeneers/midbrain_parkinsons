@@ -1,2 +1,0 @@
-This file is used as an example of how text can be sent from a file over IoT.
-The WetAI Controller .ipynb file sends the text written here over to the device.
