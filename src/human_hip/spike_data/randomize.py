@@ -78,6 +78,7 @@ def random_harris(sd, seed=1): #seed=None
         # Collect the spikes of the original Spikedata and define a new
         # "randomized spike matrix" to store them in.
         sm = sd.sparse_raster(1.0)     # spike raster with 1ms bins 
+        dt=1.0
         idces, times = np.nonzero(randomize_raster(sm, seed))
         return SpikeData( idces, times*dt, length=sd.length, N=sd.N,
                          metadata=sd.metadata, neuron_data=sd.neuron_data,
