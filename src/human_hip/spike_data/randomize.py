@@ -47,11 +47,11 @@ def random_shuffle(sd, seedIn=1): #seed=np.random.randint(0, 10000)
     RasterT = np.transpose(Rastered) # transpose raster to look at individual time slices
     shuffleT = []
     dt=1.0
-  
+
     np.random.seed(seedIn) # set random seed to seedIn
     seeds = [np.random.randint(0, 1000000000) for _ in range(len(RasterT))] # creat array of randomized seeds from seedIn
     i = 0
-    
+
     for timeslice in RasterT:
         randslice = np.copy(timeslice) 
         np.random.seed(seeds[i]) # set local seed to a seedIn generated value for randomized shuffle
@@ -60,26 +60,75 @@ def random_shuffle(sd, seedIn=1): #seed=np.random.randint(0, 10000)
         shuffleT.append(randslice) 
         
     ShuffleRaster = np.transpose(shuffleT) # re-transpose raster to get origional orientation 
-    idces, times = np.nonzero(ShuffleRaster)
-    
-    return SpikeData( idces, times*dt, length=sd.length, N=sd.N, 
-                         metadata=sd.metadata, neuron_data=sd.neuron_data,
-                         neuron_attributes=sd.neuron_attributes)
+    ShuffleTrain = []
+    for row in ShuffleRaster:
+        ShuffleTrain.append( np.nonzero(row)[0] )
 
+    return SpikeData( ShuffleTrain, length=sd.length, N=sd.N, 
+                            metadata=sd.metadata, neuron_data=sd.neuron_data,
+                            neuron_attributes=sd.neuron_attributes)
+
+
+# def random_shuffle(sd, seedIn=1): #seed=np.random.randint(0, 10000)
+#     # Randomizes a dataset while perseving an underlying structure by swaping firing times between neurons
+#     Rastered = sd.raster(bin_size=1) # get spikedata's raster
+#     RasterT = np.transpose(Rastered) # transpose raster to look at individual time slices
+#     shuffleT = []
+#     dt=1.0
+  
+#     np.random.seed(seedIn) # set random seed to seedIn
+#     seeds = [np.random.randint(0, 1000000000) for _ in range(len(RasterT))] # creat array of randomized seeds from seedIn
+#     i = 0
+    
+#     for timeslice in RasterT:
+#         randslice = np.copy(timeslice) 
+#         np.random.seed(seeds[i]) # set local seed to a seedIn generated value for randomized shuffle
+#         i += 1
+#         np.random.shuffle(randslice) # shuffle timeslice
+#         shuffleT.append(randslice) 
+        
+#     ShuffleRaster = np.transpose(shuffleT) # re-transpose raster to get origional orientation 
+#     idces, times = np.nonzero(ShuffleRaster)
+    
+#     return SpikeData( idces, times*dt, length=sd.length, N=sd.N, 
+#                          metadata=sd.metadata, neuron_data=sd.neuron_data,
+#                          neuron_attributes=sd.neuron_attributes)
 
 
 def random_harris(sd, seed=1): #seed=None
-        '''
-        Kenneth Harris Method, Create a new SpikeData object which preserves the population
-        rate and mean firing rate of each neuron in an existing
-        SpikeData by randomly reallocating all spike times to different
-        neurons at a resolution given by dt.
-        '''
-        # Collect the spikes of the original Spikedata and define a new
-        # "randomized spike matrix" to store them in.
-        sm = sd.sparse_raster(1.0)     # spike raster with 1ms bins 
-        dt=1.0
-        idces, times = np.nonzero(randomize_raster(sm, seed))
-        return SpikeData( idces, times*dt, length=sd.length, N=sd.N,
-                         metadata=sd.metadata, neuron_data=sd.neuron_data,
-                         neuron_attributes=sd.neuron_attributes)
+    '''
+    Kenneth Harris Method, Create a new SpikeData object which preserves the population
+    rate and mean firing rate of each neuron in an existing
+    SpikeData by randomly reallocating all spike times to different
+    neurons at a resolution given by dt.
+    '''
+    # Collect the spikes of the original Spikedata and define a new
+    # "randomized spike matrix" to store them in.
+    sm = sd.sparse_raster(1.0)     # spike raster with 1ms bins 
+    dt=1.0
+
+    ShuffleRaster = randomize_raster(sm, seed)
+    ShuffleTrain = []
+    for row in ShuffleRaster:
+        ShuffleTrain.append( np.nonzero(row)[0] )
+
+    return SpikeData( ShuffleTrain, length=sd.length, N=sd.N, 
+                            metadata=sd.metadata, neuron_data=sd.neuron_data,
+                            neuron_attributes=sd.neuron_attributes )
+
+
+# def random_harris(sd, seed=1): #seed=None
+#         '''
+#         Kenneth Harris Method, Create a new SpikeData object which preserves the population
+#         rate and mean firing rate of each neuron in an existing
+#         SpikeData by randomly reallocating all spike times to different
+#         neurons at a resolution given by dt.
+#         '''
+#         # Collect the spikes of the original Spikedata and define a new
+#         # "randomized spike matrix" to store them in.
+#         sm = sd.sparse_raster(1.0)     # spike raster with 1ms bins 
+#         dt=1.0
+#         idces, times = np.nonzero(randomize_raster(sm, seed))
+#         return SpikeData( idces, times*dt, length=sd.length, N=sd.N,
+#                          metadata=sd.metadata, neuron_data=sd.neuron_data,
+#                          neuron_attributes=sd.neuron_attributes)
