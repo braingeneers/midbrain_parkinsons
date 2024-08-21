@@ -11,10 +11,13 @@ import numpy as np
 
 
 
+
+
 def plot_raster( sd, title="", opto=[], axs=None, xlim=None, ylim=None, smoothness=20, size=(16,6) ):
-    pop_rate = sd.binned(bin_size=1)
-    pop_fr = gaussian_filter1d(pop_rate.astype(float), sigma=smoothness)
-    bins = np.linspace(0, sd.length, pop_rate.shape[0] ) #/1000
+    num_spikes = sd.binned(bin_size=1)
+    smoothed_spikes = gaussian_filter1d( num_spikes.astype(float), sigma=smoothness)
+    pop_fr = smoothed_spikes * 1000 / sd.N
+    bins = np.linspace(0, sd.length, num_spikes.shape[0] ) #/1000
     
     if axs is None:
         fig, axs = plt.subplots(1, 1, figsize=size )
@@ -50,6 +53,48 @@ def plot_raster( sd, title="", opto=[], axs=None, xlim=None, ylim=None, smoothne
     axs1.tick_params(axis='y', colors='r')
 
     return axs, axs1
+
+
+
+# def plot_raster( sd, title="", opto=[], axs=None, xlim=None, ylim=None, smoothness=20, size=(16,6) ):
+#     pop_rate = sd.binned(bin_size=1)
+#     pop_fr = gaussian_filter1d(pop_rate.astype(float), sigma=smoothness)
+#     bins = np.linspace(0, sd.length, pop_rate.shape[0] ) #/1000
+    
+#     if axs is None:
+#         fig, axs = plt.subplots(1, 1, figsize=size )
+#     axs.set_title(title, fontsize=22)
+
+#     y = 0
+#     for vv in sd.train:
+#         axs.scatter(vv/1000, [y]*len(vv), marker="|", c='k', s=4, alpha=0.7)
+#         y += 1
+#     axs.set_xlabel("Time (s)", fontsize=16)
+#     axs.set_ylabel("Neural Unit", fontsize=16)
+#     axs.xaxis.set_tick_params(labelsize=16)
+#     axs.yaxis.set_tick_params(labelsize=16)
+#     for row in opto:
+#         axs.axvspan(row[0], row[1], color='#00FF00', alpha=0.15) 
+
+#     axs1 = axs.twinx()
+#     axs1.yaxis.set_label_position("right") 
+#     axs1.spines['right'].set_color('r')
+#     axs1.spines['right'].set_linewidth(3)
+#     axs1.plot(bins/1000, pop_fr, color='r', linewidth=3, alpha=0.6)
+#     axs1.set_ylabel("Population Firing Rate (Hz)", fontsize=16, color='r')
+#     axs1.set_xlabel("Time (ms)", fontsize=16)
+#     axs1.yaxis.set_tick_params(labelsize=16)
+#     axs1.set_xlim(xlim)
+#     axs1.set_ylim(ylim)
+#     #axs1.set_ylim(ylim)
+
+#     axs1.spines['top'].set_visible(False)
+#     axs1.get_xaxis().set_visible(False)
+#     axs1.tick_params(left=False, right=True, labelleft=False, labelright=True,
+#                     bottom=False, labelbottom=True)
+#     axs1.tick_params(axis='y', colors='r')
+
+#     return axs, axs1
 
 
 
