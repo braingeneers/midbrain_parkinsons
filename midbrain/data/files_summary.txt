@@ -1,7 +1,15 @@
-# Summary of where to find files on WRP
+
+# The 4 datasets in this foulder are the one's that Aidan said were worth looking at
+
+
+##############################
 # Greg's summary of different datasets
 # https://docs.google.com/spreadsheets/d/1pZlkw39gZOtk3gcEyN4RQN9S15G27Gsqtkmvqv3i9aA/edit?gid=0#gid=0
+#############################
 
+#######################
+# Summary of where to find all files on WRP
+#####################
 (base) melliot1@gi-melliot1 ~ % aws --endpoint https://s3.braingeneers.gi.ucsc.edu s3 ls s3://braingeneers/ephys/2024-11-04-e-SmitsMidbrain/derived/kilosort2/
 2024-11-08 16:34:19   16590870 24432_SmitsMo_D52_sect300_20241104_acqm.zip
 2024-11-08 16:34:35  121992448 24432_SmitsMo_D52_sect300_20241104_figure.zip
