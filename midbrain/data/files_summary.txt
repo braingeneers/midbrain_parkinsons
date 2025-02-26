@@ -1,0 +1,54 @@
+# Summary of where to find files on WRP
+# Greg's summary of different datasets
+# https://docs.google.com/spreadsheets/d/1pZlkw39gZOtk3gcEyN4RQN9S15G27Gsqtkmvqv3i9aA/edit?gid=0#gid=0
+
+(base) melliot1@gi-melliot1 ~ % aws --endpoint https://s3.braingeneers.gi.ucsc.edu s3 ls s3://braingeneers/ephys/2024-11-04-e-SmitsMidbrain/derived/kilosort2/
+2024-11-08 16:34:19   16590870 24432_SmitsMo_D52_sect300_20241104_acqm.zip
+2024-11-08 16:34:35  121992448 24432_SmitsMo_D52_sect300_20241104_figure.zip
+2024-11-08 16:34:15  644765464 24432_SmitsMo_D52_sect300_20241104_phy.zip  *****
+****  2024-11-13 13:16:25   32531222 24481_SmitsMo_D52_sect300_20241104_acqm.zip
+----2024-11-13 13:16:34   40599711 24481_SmitsMo_D52_sect300_20241104_figure.zip
+----2024-11-13 13:15:19 1026168041 24481_SmitsMo_D52_sect300_20241104_phy.zip
+**** 2024-11-13 13:21:34   63831004 24578_SmitsMo_D52_sect300_20241104_acqm.zip  *****
+2024-11-13 13:22:46   49778829 24578_SmitsMo_D52_sect300_20241104_figure.zip
+2024-11-13 13:21:27 1329500882 24578_SmitsMo_D52_sect300_20241104_phy.zip
+2024-11-08 18:06:22    1306374 output_plots_24432_SmitsMo_D52_sect300_20241104.zip
+
+
+*************************
+(base) melliot1@gi-melliot1 ~ % aws --endpoint https://s3.braingeneers.gi.ucsc.edu s3 ls s3://braingeneers/ephys/2024-11-12-e-SmitsMidbrain-DIV6/derived/kilosort2/
+2024-11-12 18:08:19   10992595 24432_SmitsMO_D60_sect300_T2PostDrug150-DIV6_20241112_acqm.zip
+2024-11-12 18:08:40  110453109 24432_SmitsMO_D60_sect300_T2PostDrug150-DIV6_20241112_figure.zip
+2024-11-12 18:08:16  443348188 24432_SmitsMO_D60_sect300_T2PostDrug150-DIV6_20241112_phy.zip
+2024-11-12 18:38:12   40091012 24481_SmitsMO_D60_sect300_Control_DIV6_20241112_acqm.zip
+2024-11-12 18:38:21   40922929 24481_SmitsMO_D60_sect300_Control_DIV6_20241112_figure.zip
+2024-11-12 18:38:07  815532108 24481_SmitsMO_D60_sect300_Control_DIV6_20241112_phy.zip
+GOTTEN *****  2024-11-12 18:20:03   49936967 24578_SmitsMO_D60_sect300_T2PostDrug175-DIV6_20241112_acqm.zip  *****
+2024-11-12 18:21:27  242452429 24578_SmitsMO_D60_sect300_T2PostDrug175-DIV6_20241112_figure.zip
+2024-11-12 18:18:54  663578682 24578_SmitsMO_D60_sect300_T2PostDrug175-DIV6_20241112_phy.zip
+2024-11-12 17:41:20    3040738 25400_SmitsMO_D60_Whole_T2PostDrug175-DIV6_20241112_acqm.zip
+2024-11-12 17:41:32   64946390 25400_SmitsMO_D60_Whole_T2PostDrug175-DIV6_20241112_figure.zip
+2024-11-12 17:41:18   39872338 25400_SmitsMO_D60_Whole_T2PostDrug175-DIV6_20241112_phy.zip
+*************************
+
+
+
+????????????
+(base) melliot1@gi-melliot1 ~ % aws --endpoint https://s3.braingeneers.gi.ucsc.edu s3 ls s3://braingeneers/ephys/2024-11-14-e-SmitsMidbrain-Drug/derived/kilosort2/
+2025-01-16 19:49:11    9006635 24432_SmitsMO_D62_sect300_BASELINE_150-DIV8_20241114_acqm.zip
+2025-01-16 19:49:27   83191665 24432_SmitsMO_D62_sect300_BASELINE_150-DIV8_20241114_figure.zip
+2025-01-16 19:49:08  231531243 24432_SmitsMO_D62_sect300_BASELINE_150-DIV8_20241114_phy.zip
+2025-01-16 19:04:26    7950046 24432_SmitsMO_D62_sect300_GABA_150-DIV8_20241114_acqm.zip
+2025-01-16 19:04:38   71636478 24432_SmitsMO_D62_sect300_GABA_150-DIV8_20241114_figure.zip
+2025-01-16 19:04:22   71457993 24432_SmitsMO_D62_sect300_GABA_150-DIV8_20241114_phy.zip
+2025-01-16 18:35:11    6351638 24432_SmitsMO_D62_sect300_NBQXCPP_150-DIV8_20241114_acqm.zip
+2025-01-16 18:35:27   62065718 24432_SmitsMO_D62_sect300_NBQXCPP_150-DIV8_20241114_figure.zip
+2025-01-16 18:35:09   45283231 24432_SmitsMO_D62_sect300_NBQXCPP_150-DIV8_20241114_phy.zip
+2025-01-16 19:01:28   35307713 24481_SmitsMO_D62_sect300_BASELINE_Control-DIV8_20241114_acqm.zip
+2025-01-16 19:01:37   31538967 24481_SmitsMO_D62_sect300_BASELINE_Control-DIV8_20241114_figure.zip
+2025-01-16 19:01:22  454390707 24481_SmitsMO_D62_sect300_BASELINE_Control-DIV8_20241114_phy.zip
+2025-01-16 18:57:58   20781192 24481_SmitsMO_D62_sect300_GABA_Control-DIV8_20241114_acqm.zip
+2025-01-16 18:58:04   24098634 24481_SmitsMO_D62_sect300_GABA_Control-DIV8_20241114_figure.zip
+2025-01-16 18:57:54  185644170 24481_SmitsMO_D62_sect300_GABA_Control-DIV8_20241114_phy.zip
+2025-01-16 18:55:15   26486922 24481_SmitsMO_D62_sect300_NBQXCPP_Control-DIV8_20241114_acqm.zip
+2025-01-16 18:55:35  222469353 
