@@ -1,13 +1,7 @@
-# Human_Hippocampus: ignore large datasets
-#*data/ephys/* added data to github
-#*.h5
-#*.zip
+
 # ignore credentials
 */credentials
-# ignore empy directories
-*/.DS_Store
-*/hc5.2_chip18790_baseline_rec5.10.23.raw.h5
-*latencies.pkl
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
