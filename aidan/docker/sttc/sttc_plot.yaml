@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: midbrain-sttc-plots
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+      - name: sttc-plots
+        image: aidanmorson/sttc-okun:v0
+        imagePullPolicy: Always
+        resources:
+
+          # GPU Run
+          requests:
+            cpu: "15"
+            memory: "150Gi"
+            ephemeral-storage: "250Gi"
+          limits:
+            cpu: "15"
+            memory: "150Gi"
+            ephemeral-storage: "250Gi"
+
+        command: ["stdbuf", "-i0", "-o0", "-e0", "/usr/bin/time", "-v", "python", "generate-plots/generate_okun.py"]
+        args:
+          - s3://braingeneersdev/amorson/parkinsons-midbrain/d49/24578_D49-6.zip
+          - s3://braingeneersdev/amorson/parkinsons-midbrain/d49/24481_D49-6.zip
+          - s3://braingeneersdev/amorson/parkinsons-midbrain/d60/24578_D60+6.zip
+          - s3://braingeneersdev/amorson/parkinsons-midbrain/d60/24481_D60+6.zip
+          - s3://braingeneersdev/amorson/parkinsons-midbrain/sttc_run2/    
+
+        env:
+          - name: "PYTHONUNBUFFERED"
+            value: "true"
+          - name: "PYTHONPATH"
+            value: "/app"
+          # Ceph (internal)
+          - name: "ENDPOINT_URL"
+            value: "https://s3.braingeneers.gi.ucsc.edu"  # ceph internal
+          - name: "S3_ENDPOINT"
+            value: "s3.braingeneers.gi.ucsc.edu" # ceph internal
+
+        volumeMounts:
+
+          # Ceph credentials
+          - name: "prp-s3-credentials"
+            mountPath: "/root/.aws/credentials"
+            subPath: "credentials"
+
+      restartPolicy: Never
+      volumes:
+        # Secrets file for nautilus s3 credentials .aws/credentials and .s3cfg
+        - name: prp-s3-credentials
+          secret:
+            secretName: prp-s3-credentials
+        - name: ephemeral
+          emptyDir: {}

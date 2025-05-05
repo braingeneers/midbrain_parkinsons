@@ -1,0 +1,247 @@
+#!/usr/bin/env python3
+"""
+Rewritten script to process each dataset sequentially.
+For each dataset, we:
+  - Download and load the SpikeData object.
+  - Compute the original STTC matrix.
+  - For each iteration:
+      * Randomize the data (without storing the raster).
+      * Create a new SpikeData object.
+      * Compute its STTC matrix and write it into a memmapped array.
+      * Save the SpikeData object in a dictionary.
+  - Once done, convert the memmapped STTC matrices to a numpy array.
+  - Compute a filtered STTC matrix (using the 95th percentile).
+  - Assemble a dictionary with the original and randomized results.
+  - Save and upload the dataset result, then clear memory.
+"""
+
+import os
+import sys
+import argparse
+import shutil
+import numpy as np
+import braingeneers.utils.s3wrangler as wr
+import gc
+
+# Import your SpikeData loader and helper functions.
+from load_data.load_npz import load_spikedata
+
+def compute_true_matrices(sd, bin_size=1):
+    original_raster = sd.raster(bin_size=bin_size)
+    true_sttc = sd.spike_time_tilings()
+    return original_raster, true_sttc
+
+def _okun_swap(ar, idxs, rng):
+    idx0 = rng.randint(len(idxs[0]))
+    idx1 = rng.randint(len(idxs[0]))
+    i0, j0 = idxs[0][idx0], idxs[1][idx0]
+    i1, j1 = idxs[0][idx1], idxs[1][idx1]
+    if i0 == i1 or j0 == j1 or ar[i0, j1] == 1.0 or ar[i1, j0] == 1.0:
+        return False
+    ar[i0, j0] = ar[i1, j1] = 0.0
+    ar[i0, j1] = ar[i1, j0] = 1.0
+    idxs[0][idx0], idxs[1][idx0] = i0, j1
+    idxs[0][idx1], idxs[1][idx1] = i1, j0
+    return True
+
+def randomize_raster_okun(raster, seed: int | None = None, swap_per_spike: int = 5):
+    """
+    Generate a randomized version of a spike raster, preserving population rate. The
+    input raster MUST have at most one spike per neuron per bin!
+
+    Algorithm due to Okun et al. (2015) "Diverse coupling of neurons to populations in
+    sensory cortex," implementation by TJ van der Molen from "Protosequences in human
+    cortical organoids model intrinsic states in the developing cortex."
+    """
+    rng = np.random.RandomState(seed)
+    raster = raster.copy()
+    idxs = np.where(raster == 1.0)
+    cnt_swap = 0
+    for _ in range(int((swap_per_spike + 1) * np.sum(raster))):
+        if _okun_swap(raster, idxs, rng):
+            cnt_swap += 1
+
+    if cnt_swap < swap_per_spike * np.sum(raster):
+        for _ in range(int((swap_per_spike + 1) * np.sum(raster))):
+            if _okun_swap(raster, idxs, rng):
+                cnt_swap += 1
+
+    if cnt_swap < swap_per_spike * np.sum(raster):
+        print(
+            "ERROR: Insufficient successful swaps, only {} of {} required".format(
+                cnt_swap, swap_per_spike * np.sum(raster)
+            )
+        )
+
+    return raster
+
+def filter_true_matrix(true_matrix, sttc_array, percentile=95):
+    """
+    Compute the 95th percentile (across iterations) for each neuron pair,
+    then retain the true STTC value only if it exceeds that percentile.
+    """
+    percentile95 = np.percentile(sttc_array, percentile, axis=0)
+    filtered = np.where(true_matrix >= percentile95, true_matrix, 0)
+    return filtered
+
+def filter_true_matrix_zscore(true_matrix, sttc_array, z_threshold=2.5):
+    """
+    Filter using Z-score method.
+    Retain only true STTC values that have a Z-score above z_threshold.
+
+    Parameters:
+    - true_matrix: (N, N) matrix of true STTC values
+    - sttc_array: (iterations, N, N) array of randomized STTC values
+    - z_threshold: float, z-score cutoff for significance (default 1.96 ~ 95%)
+
+    Returns:
+    - filtered matrix, same shape as true_matrix
+    """
+    mean_rand = np.mean(sttc_array, axis=0)
+    std_rand = np.std(sttc_array, axis=0)
+
+    # Avoid divide-by-zero issues
+    std_rand = np.where(std_rand == 0, 1e-10, std_rand)
+
+    z_scores = (true_matrix - mean_rand) / std_rand
+    filtered = np.where(z_scores > z_threshold, true_matrix, 0)
+
+    return filtered
+
+
+def process_dataset(infile, local_input_dir, local_output_dir, iterations, filter_method, swap_per_spike):
+    dataset_name = os.path.splitext(os.path.basename(infile))[0]
+    print(f"Processing dataset: {dataset_name}")
+    local_file = os.path.join(local_input_dir, f"{dataset_name}.npz")
+
+    # Download or copy the input file locally.
+    if infile.startswith("s3://"):
+        print(f"Downloading {infile} to {local_file}")
+        try:
+            wr.download(infile, local_file)
+        except Exception as e:
+            print(f"Error downloading {infile}: {e}")
+            sys.exit(1)
+    else:
+        try:
+            shutil.copy(infile, local_file)
+        except Exception as e:
+            print(f"Error copying {infile}: {e}")
+            sys.exit(1)
+
+    # Load the SpikeData object.
+    sd = load_spikedata(local_file)
+    
+    # Compute original raster (needed for randomization) and true STTC matrix.
+    orig_raster, true_sttc = compute_true_matrices(sd, bin_size=1)
+
+    # Prepare to store randomized STTC matrices via np.memmap.
+    sttc_shape = true_sttc.shape  # (N, N)
+    sttc_dtype = true_sttc.dtype
+    memmap_file = os.path.join(local_output_dir, f"{dataset_name}_sttc_rr.dat")
+    sttc_memmap = np.memmap(memmap_file, dtype=sttc_dtype, mode="w+", 
+                            shape=(iterations, sttc_shape[0], sttc_shape[1]))
+
+    # Dictionary to store SpikeData objects for each iteration.
+    random_sd = {}
+
+    # Process each iteration.
+    for i in range(1, iterations + 1):
+        seed = 42 + i
+        # Randomize the original raster.
+        rand_raster = randomize_raster_okun(orig_raster, seed=seed, swap_per_spike=swap_per_spike)
+        # Create a new SpikeData object from the randomized raster.
+        new_sd = sd.__class__.from_raster(rand_raster, bin_size_ms=1,
+                                          length=sd.length,
+                                          metadata=sd.metadata,
+                                          neuron_data=sd.neuron_data,
+                                          neuron_attributes=sd.neuron_attributes)
+        # Store the SpikeData object.
+        random_sd[i] = new_sd
+        # Compute the STTC matrix for this randomized dataset.
+        sttc_memmap[i - 1, :, :] = new_sd.spike_time_tilings()
+        print(f"Iteration {i} complete for method raster")
+
+    # Flush the memmap to disk.
+    sttc_memmap.flush()
+    # Convert the memmapped array to a regular numpy array.
+    sttc_rand = np.array(sttc_memmap)
+
+    # Compute the filtered STTC matrix using the 95th percentile across iterations.
+    if filter_method == "percentile":
+        filter_threshold = 95
+        filtered_rr = filter_true_matrix(true_sttc, sttc_rand, percentile=filter_threshold)
+    elif filter_method == "zscore":
+        filter_threshold = 2.5
+        filtered_rr = filter_true_matrix_zscore(true_sttc, sttc_rand, z_threshold=filter_threshold)
+    else:
+        raise ValueError(f"Unknown filtering method: {filter_method}")
+
+
+    # Assemble the results dictionary.
+    dataset_dict = {
+        "original": {"sd": sd, "sttc": true_sttc},
+        "randomize_raster": {
+            "sd": random_sd, 
+            "sttc": sttc_rand, 
+            "filtered": filtered_rr, 
+            "filtered_method": filter_method,
+            "filtered_threshold": filter_threshold,
+            "swap_per_spike": swap_per_spike
+        }
+    }
+
+    # Save the dictionary as a compressed npz file.
+    out_file = os.path.join(local_output_dir, f"{dataset_name}_results.npz")
+    np.savez_compressed(out_file, **dataset_dict)
+    print(f"Dataset {dataset_name} processing complete. Saved results to {out_file}")
+
+    # Optionally, upload the result file to S3.
+    s3_output_file = os.path.join(args.output_s3, os.path.basename(out_file))
+    print(f"Uploading {out_file} to {s3_output_file}")
+    try:
+        wr.upload(out_file, s3_output_file)
+    except Exception as e:
+        print(f"Error uploading {out_file}: {e}")
+        sys.exit(1)
+
+    # Clean up large objects and remove local files if desired.
+    del sd, orig_raster, true_sttc, sttc_memmap, sttc_rand, random_sd, dataset_dict
+    gc.collect()
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Randomize SpikeData objects, compute and filter STTC matrices, and upload results to S3."
+    )
+    parser.add_argument("input_files", nargs="+", help="Input .npz file paths (S3 or local) for SpikeData objects.")
+    parser.add_argument("output_s3", help="Output S3 path for the results npz file (e.g. s3://bucket/output_folder)")
+    parser.add_argument("--iterations", type=int, default=100, help="Number of randomizations per method (default 100)")
+    parser.add_argument("--filter-method", choices=["percentile", "zscore"], default="percentile",
+                    help="Filtering method: 'percentile' or 'zscore' (default: percentile)")
+    parser.add_argument("--swap-per-spike", type=int, default=5,
+                    help="Number of swaps per spike for Okun randomization (default 5)")
+
+
+    global args
+    args = parser.parse_args()
+    
+    input_paths = args.input_files
+    iterations = args.iterations
+    filter_method = args.filter_method
+    swap_per_spike = args.swap_per_spike
+
+
+    # Setup local directories.
+    local_input_dir = "/tmp/local_inputs"
+    local_output_dir = "/tmp/output_results"
+    os.makedirs(local_input_dir, exist_ok=True)
+    os.makedirs(local_output_dir, exist_ok=True)
+    
+    # Process each dataset individually.
+    for infile in input_paths:
+        process_dataset(infile, local_input_dir, local_output_dir, iterations, filter_method, swap_per_spike)
+    
+    print("Analysis complete. All datasets processed and uploaded.")
+
+if __name__ == '__main__':
+    main()
